@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Consultar Disponibilidad{% endblock %}
+{% block content %}
+  <main>
+    <section class="controls">
+      <h2>Consultar Disponibilidad</h2>
+
+      <select id="search-floor">
+        <option value="">Planta</option>
+      </select>
+
+      <select id="search-zone" disabled>
+        <option value="">Zona</option>
+      </select>
+
+      <select id="search-module" disabled>
+        <option value="">Módulo</option>
+      </select>
+
+      <select id="search-room" disabled>
+        <option value="">Habitación</option>
+      </select>
+
+      <button id="btn-search">Consultar</button>
+
+      <ul id="bed-list"></ul>
+    </section>
+  </main>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const sf = id => document.getElementById(id);
+    const floorSel = sf("search-floor"),
+          zoneSel  = sf("search-zone"),
+          modSel   = sf("search-module"),
+          roomSel  = sf("search-room"),
+          listEl   = sf("bed-list"),
+          btnSearch= sf("btn-search");
+
+    let bedsData = [];
+
+    // 1) Carga inicial de TODOS los documentos desde MongoDB
+    fetch("/api/search-beds")
+      .then(r => r.json())
+      .then(js => {
+        bedsData = js.beds;
+        // rellena Planta
+        const plantas = [...new Set(bedsData.map(b=>b.planta))];
+        plantas.forEach(p => floorSel.add(new Option(p,p)));
+      });
+
+    // 2) Populate dependiente de Planta → Zonas
+    floorSel.onchange = () => {
+      const p = floorSel.value;
+      zoneSel.innerHTML = '<option value="">Zona</option>';
+      modSel.innerHTML  = '<option value="">Módulo</option>';
+      roomSel.innerHTML = '<option value="">Habitación</option>';
+      zoneSel.disabled = modSel.disabled = roomSel.disabled = true;
+      if (!p) return;
+      zoneSel.disabled = false;
+      const zonas = [...new Set(
+        bedsData.filter(b=>b.planta===p).map(b=>b.zona)
+      )];
+      zonas.forEach(z => zoneSel.add(new Option(z,z)));
+    };
+
+    // 3) Planta+Zona → Módulos
+    zoneSel.onchange = () => {
+      const p= floorSel.value, z= zoneSel.value;
+      modSel.innerHTML  = '<option value="">Módulo</option>';
+      roomSel.innerHTML = '<option value="">Habitación</option>';
+      modSel.disabled = roomSel.disabled = true;
+      if (!z) return;
+      modSel.disabled = false;
+      const mods = [...new Set(
+        bedsData
+          .filter(b=>b.planta===p&&b.zona===z)
+          .map(b=>b.modulo)
+      )];
+      mods.forEach(m=>modSel.add(new Option(m,m)));
+    };
+
+    // 4) Planta+Zona+Módulo → Habitaciones
+    modSel.onchange = () => {
+      const p= floorSel.value, z= zoneSel.value, m= modSel.value;
+      roomSel.innerHTML = '<option value="">Habitación</option>';
+      roomSel.disabled = true;
+      if (!m) return;
+      roomSel.disabled = false;
+      const rooms = [...new Set(
+        bedsData
+          .filter(b=>b.planta===p&&b.zona===z&&b.modulo===m)
+          .map(b=>b.habitacion)
+      )];
+      rooms.forEach(r=>roomSel.add(new Option(r,r)));
+    };
+
+    // 5) Al pulsar “Consultar”: vuelve a MongoDB con filtros
+    btnSearch.onclick = () => {
+      const qs = new URLSearchParams();
+      if (floorSel.value) qs.set("planta", floorSel.value);
+      if (zoneSel.value)  qs.set("zona",   zoneSel.value);
+      if (modSel.value)   qs.set("modulo", modSel.value);
+      if (roomSel.value)  qs.set("habitacion", roomSel.value);
+
+      fetch(`/api/search-beds?${qs}`)
+        .then(r=>r.json())
+        .then(js=>{
+          listEl.innerHTML = "";
+          (js.beds.length
+            ? js.beds
+            : []
+          ).forEach(b => {
+            const li = document.createElement("li");
+            li.textContent = 
+              `Planta ${b.planta}, Zona ${b.zona}, Módulo ${b.modulo}, ` +
+              `Hab. ${b.habitacion}, Cama ${b.numero}, Estado ${b.estado}` +
+              // Añado aquí los campos nuevos, si existen
+              (b.nombre_alumno
+                ? `, Alumno: ${b.nombre_alumno}`
+                : ''
+              ) +
+              (b.numero_alumno
+                ? `, Nº Alumno: ${b.numero_alumno}`
+                : ''
+              );
+            listEl.appendChild(li);
+          });
+          if (!js.beds.length)
+            listEl.innerHTML = "<li>No hay camas</li>";
+        });
+    };
+  });
+  </script>
+{% endblock %}

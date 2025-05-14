@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Asignar camas{% endblock %}
+
+{% block content %}
+<section class="container">
+  <h1>Asignar camas a alumnos</h1>
+  <table id="assignTable">
+    <thead>
+      <tr>
+        <th>Nombre Alumno</th>
+        <th>Número Alumno</th>
+        <th>Bed ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in students %}
+      <tr>
+        <td>{{ s.nombre_alumno }}</td>
+        <td>{{ s.numero_alumno }}</td>
+        <td>
+          <select class="bedSelect">
+            <option value="">--Selecciona cama--</option>
+            {% for bed_id in free_beds %}
+            <option value="{{ bed_id }}">{{ bed_id }}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button id="saveAssignments">Guardar asignaciones</button>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Para evitar que la misma cama se elija dos veces…
+  const selects = Array.from(document.querySelectorAll('.bedSelect'));
+  selects.forEach(sel => {
+    sel.addEventListener('change', () => {
+      // Deshabilitar esa opción en los otros <select>
+      const chosen = sel.value;
+      selects.forEach(other => {
+        if (other !== sel) {
+          const opt = other.querySelector(`option[value="${chosen}"]`);
+          if (opt) opt.disabled = chosen !== '' ? true : false;
+        }
+      });
+    });
+  });
+
+  document.getElementById('saveAssignments')
+    .addEventListener('click', () => {
+      // Construimos el payload de filas válidas
+      const rows = document.querySelectorAll('#assignTable tbody tr');
+      const payload = [];
+      rows.forEach(tr => {
+        const nombre = tr.cells[0].innerText.trim();
+        const numero = tr.cells[1].innerText.trim();
+        const bedId = tr.querySelector('select').value;
+        if (bedId) {
+          payload.push({ nombre_alumno: nombre,
+                         numero_alumno: numero,
+                         bed_id: bedId });
+        }
+      });
+      // Enviamos al servidor
+      fetch('/api/apply-assignments', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ assignments: payload })
+      })
+      .then(r => r.json())
+      .then(res => alert(res.message))
+      .catch(_ => alert('Error al guardar'));
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Subir Excel{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Subir y actualizar desde Excel</h2>
+  <form action="{{ url_for('main.preview') }}" method="post" enctype="multipart/form-data">
+    <input type="file" name="excel" accept=".xlsx,.xls"/>
+    <button type="submit">Vista Previa</button>
+  </form>
+</div>
+{% endblock %}

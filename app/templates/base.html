@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Control de Alumnos{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header>
+    <img src="{{ url_for('static', filename='img/escudo2.png') }}" class="logo" alt="Escudo"/>
+    <img src="{{ url_for('static', filename='img/bandera.gif') }}" class="flag" alt="Bandera"/>
+    <h1>Control de Alumnos - Cuartel</h1>
+    <nav>
+      <a href="{{ url_for('main.index') }}">Inicio</a>
+      <a href="{{ url_for('main.consulta') }}">Consultar</a>
+      <a href="{{ url_for('main.update') }}">Actualizar</a>
+      <a href="{{ url_for('main.upload_page') }}">Subir Excel</a>
+      <a href="{{ url_for('main.assign') }}">Asignar camas</a>
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer>
+    <p>© 2025 Cuartel</p>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

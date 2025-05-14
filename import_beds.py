@@ -3,10 +3,10 @@ from flask import Flask
 from flask_pymongo import PyMongo
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/prueba"  # Ajusta si es necesario
+app.config["MONGO_URI"] = 'mongodb://localhost:27017/Morpheus'  # Ajusta si es necesario
 mongo = PyMongo(app)
 
-with open("beds.json", "r", encoding="utf-8") as file:
+with open("beds2.json", "r", encoding="utf-8") as file:
     beds_data = json.load(file)
 
 # Inserta los documentos en la colección "beds"
