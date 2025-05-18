@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Asignar camas{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Previsualización de alumnos y asignación de camas</h2>
+  <form method="post" action="{{ url_for('main.assign_upload') }}">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre Alumno</th>
+          <th>Número Alumno</th>
+          <th>Género</th>
+          <th>Bed ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set camas_asignadas = [] %}
+        {% for s in students %}
+        <tr>
+          <td>
+            <input type="hidden" name="nombre_alumno_{{ loop.index0 }}" value="{{ s.nombre_alumno }}">
+            {{ s.nombre_alumno }}
+          </td>
+          <td>
+            <input type="hidden" name="numero_alumno_{{ loop.index0 }}" value="{{ s.numero_alumno }}">
+            {{ s.numero_alumno }}
+          </td>
+          <td>
+            <input type="hidden" name="genero_{{ loop.index0 }}" value="{{ s.genero }}">
+            {{ s.genero }}
+          </td>
+          <td>
+            {% set seleccionada = request.form.get('bed_id_' ~ loop.index0) %}
+            <select name="bed_id_{{ loop.index0 }}" onchange="this.form.submit()" required>
+              <option value="">--Selecciona cama--</option>
+              {% for bed_id in free_beds %}
+                {% if bed_id not in camas_asignadas or bed_id == seleccionada %}
+                  <option value="{{ bed_id }}"
+                    {% if seleccionada == bed_id %}selected{% endif %}>
+                    {{ bed_id }}
+                  </option>
+                {% endif %}
+              {% endfor %}
+              {% if seleccionada and seleccionada not in free_beds %}
+                <option value="{{ seleccionada }}" selected>{{ seleccionada }}</option>
+              {% endif %}
+            </select>
+            {% if seleccionada %}
+              {% set _ = camas_asignadas.append(seleccionada) %}
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <input type="hidden" name="total" value="{{ students|length }}">
+    <button type="submit" formaction="{{ url_for('main.assign_confirm') }}">Confirmar asignaciones</button>
+  </form>
+</div>
+{% endblock %}

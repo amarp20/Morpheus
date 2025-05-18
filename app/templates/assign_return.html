@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Resultado de asignación{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Asignación completada</h2>
+  <p>{{ asignados }} camas asignadas correctamente.</p>
+  <a href="{{ url_for('main.assign_upload') }}">Volver a asignar</a>
+</div>
+{% endblock %}

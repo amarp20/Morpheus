@@ -1,12 +1,11 @@
-{% extends "base.html" %}
-
+{% extends 'base.html' %}
+{% block title %}Subir alumnos{% endblock %}
 {% block content %}
-  <h2>Asignar camas</h2>
-  <form action="{{ url_for('main.assign') }}" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-      <label for="file">Selecciona el Excel de alumnos:</label>
-      <input type="file" name="file" id="file" accept=".xls,.xlsx,.csv" required>
-    </div>
-    <button type="submit">Cargar y preparar asignaciones</button>
+<div class="container">
+  <h2>Subir alumnos desde Excel</h2>
+  <form action="{{ url_for('main.assign_upload') }}" method="post" enctype="multipart/form-data">
+    <input type="file" name="alumnos_excel" accept=".xlsx,.xls" required>
+    <button type="submit">Previsualizar</button>
   </form>
+</div>
 {% endblock %}

@@ -15,9 +15,8 @@
     <nav>
       <a href="{{ url_for('main.index') }}">Inicio</a>
       <a href="{{ url_for('main.consulta') }}">Consultar</a>
-      <a href="{{ url_for('main.update') }}">Actualizar</a>
       <a href="{{ url_for('main.upload_page') }}">Subir Excel</a>
-      <a href="{{ url_for('main.assign') }}">Asignar camas</a>
+      <a href="{{ url_for('main.assign_upload') }}">Asignar camas</a>
     </nav>
   </header>
   <main>{% block content %}{% endblock %}</main>

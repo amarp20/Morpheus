@@ -4,76 +4,46 @@
 {% block content %}
 <section class="container">
   <h1>Asignar camas a alumnos</h1>
-  <table id="assignTable">
-    <thead>
-      <tr>
-        <th>Nombre Alumno</th>
-        <th>Número Alumno</th>
-        <th>Bed ID</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for s in students %}
-      <tr>
-        <td>{{ s.nombre_alumno }}</td>
-        <td>{{ s.numero_alumno }}</td>
-        <td>
-          <select class="bedSelect">
-            <option value="">--Selecciona cama--</option>
-            {% for bed_id in free_beds %}
-            <option value="{{ bed_id }}">{{ bed_id }}</option>
-            {% endfor %}
-          </select>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <button id="saveAssignments">Guardar asignaciones</button>
+  <form method="post" action="{{ url_for('main.assign') }}">
+    <table id="assignTable">
+      <thead>
+        <tr>
+          <th>Nombre Alumno</th>
+          <th>Número Alumno</th>
+          <th>Bed ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td>
+            <input type="hidden" name="nombre_alumno_{{ loop.index0 }}" value="{{ s.nombre_alumno }}">
+            {{ s.nombre_alumno }}
+          </td>
+          <td>
+            <input type="hidden" name="numero_alumno_{{ loop.index0 }}" value="{{ s.numero_alumno }}">
+            {{ s.numero_alumno }}
+          </td>
+          <td>
+            <select name="bed_id_{{ loop.index0 }}">
+              <option value="">--Selecciona cama--</option>
+              {% for bed_id in free_beds %}
+              <option value="{{ bed_id }}"
+                {% if asignaciones and asignaciones[loop.index0] == bed_id %}selected{% endif %}>
+                {{ bed_id }}
+              </option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <input type="hidden" name="total" value="{{ students|length }}">
+    <button type="submit">Guardar asignaciones</button>
+    {% if assign_message %}
+      <div class="card message">{{ assign_message }}</div>
+    {% endif %}
+  </form>
 </section>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Para evitar que la misma cama se elija dos veces…
-  const selects = Array.from(document.querySelectorAll('.bedSelect'));
-  selects.forEach(sel => {
-    sel.addEventListener('change', () => {
-      // Deshabilitar esa opción en los otros <select>
-      const chosen = sel.value;
-      selects.forEach(other => {
-        if (other !== sel) {
-          const opt = other.querySelector(`option[value="${chosen}"]`);
-          if (opt) opt.disabled = chosen !== '' ? true : false;
-        }
-      });
-    });
-  });
-
-  document.getElementById('saveAssignments')
-    .addEventListener('click', () => {
-      // Construimos el payload de filas válidas
-      const rows = document.querySelectorAll('#assignTable tbody tr');
-      const payload = [];
-      rows.forEach(tr => {
-        const nombre = tr.cells[0].innerText.trim();
-        const numero = tr.cells[1].innerText.trim();
-        const bedId = tr.querySelector('select').value;
-        if (bedId) {
-          payload.push({ nombre_alumno: nombre,
-                         numero_alumno: numero,
-                         bed_id: bedId });
-        }
-      });
-      // Enviamos al servidor
-      fetch('/api/apply-assignments', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ assignments: payload })
-      })
-      .then(r => r.json())
-      .then(res => alert(res.message))
-      .catch(_ => alert('Error al guardar'));
-    });
-});
-</script>
 {% endblock %}

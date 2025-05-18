@@ -4,132 +4,88 @@
   <main>
     <section class="controls">
       <h2>Consultar Disponibilidad</h2>
-
-      <select id="search-floor">
-        <option value="">Planta</option>
-      </select>
-
-      <select id="search-zone" disabled>
-        <option value="">Zona</option>
-      </select>
-
-      <select id="search-module" disabled>
-        <option value="">Módulo</option>
-      </select>
-
-      <select id="search-room" disabled>
-        <option value="">Habitación</option>
-      </select>
-
-      <button id="btn-search">Consultar</button>
-
-      <ul id="bed-list"></ul>
+      <div class="select-row">
+        <form method="get" action="{{ url_for('main.consulta') }}">
+          <div class="select-group">
+            <label for="planta">Planta</label>
+            <select id="planta" name="planta" onchange="this.form.submit()">
+              <option value="">Planta</option>
+              {% for p in plantas %}
+                <option value="{{ p }}" {% if planta == p %}selected{% endif %}>{{ p }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="zona">Zona</label>
+            <select id="zona" name="zona" onchange="this.form.submit()" {% if not zonas %}disabled{% endif %}>
+              <option value="">Zona</option>
+              {% for z in zonas %}
+                <option value="{{ z }}" {% if zona == z %}selected{% endif %}>{{ z }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="modulo">Módulo</label>
+            <select id="modulo" name="modulo" onchange="this.form.submit()" {% if not modulos %}disabled{% endif %}>
+              <option value="">Módulo</option>
+              {% for m in modulos %}
+                <option value="{{ m }}" {% if modulo == m %}selected{% endif %}>{{ m }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="habitacion">Habitación</label>
+            <select id="habitacion" name="habitacion" onchange="this.form.submit()" {% if not habitaciones %}disabled{% endif %}>
+              <option value="">Habitación</option>
+              {% for h in habitaciones %}
+                <option value="{{ h }}" {% if habitacion == h %}selected{% endif %}>{{ h }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="genero">Género</label>
+            <select id="genero" name="genero" onchange="this.form.submit()">
+              <option value="">Género</option>
+              {% for g in generos %}
+                <option value="{{ g }}" {% if genero == g %}selected{% endif %}>{{ g }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="numero_alumno">Nº Alumno</label>
+            <select id="numero_alumno" name="numero_alumno" onchange="this.form.submit()">
+              <option value="">Nº Alumno</option>
+              {% for n in numeros_alumno %}
+                <option value="{{ n }}" {% if numero_alumno == n %}selected{% endif %}>{{ n }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" name="consultar" value="1">Consultar</button>
+        </form>
+      </div>
+      {% if camas %}
+        <button type="button" onclick="window.print()" class="btn btn-primary print-allowed" style="margin: 1em 0;">Imprimir</button>
+        <ul id="bed-list">
+          {% for cama in camas %}
+            <li>
+              Planta {{ cama.planta }}, Zona {{ cama.zona }}, Módulo {{ cama.modulo }}, Hab. {{ cama.habitacion }}, 
+              Cama {{ cama.bed_id }}, Estado {{ cama.estado }},
+              {% if cama.genero %}Género: {{ cama.genero }},{% endif %}
+              {% if cama.estado == "Ocupada" %}
+                Alumno: {{ cama.nombre_alumno }}, Nº Alumno: {{ cama.numero_alumno }}
+                <form method="post" action="{{ url_for('main.desocupar_cama') }}" style="display:inline;">
+                  <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
+                  <button type="submit" class="btn btn-warning btn-sm">Desocupar</button>
+                </form>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <ul id="bed-list">
+          <li>No hay camas</li>
+        </ul>
+      {% endif %}
     </section>
   </main>
-
-  <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const sf = id => document.getElementById(id);
-    const floorSel = sf("search-floor"),
-          zoneSel  = sf("search-zone"),
-          modSel   = sf("search-module"),
-          roomSel  = sf("search-room"),
-          listEl   = sf("bed-list"),
-          btnSearch= sf("btn-search");
-
-    let bedsData = [];
-
-    // 1) Carga inicial de TODOS los documentos desde MongoDB
-    fetch("/api/search-beds")
-      .then(r => r.json())
-      .then(js => {
-        bedsData = js.beds;
-        // rellena Planta
-        const plantas = [...new Set(bedsData.map(b=>b.planta))];
-        plantas.forEach(p => floorSel.add(new Option(p,p)));
-      });
-
-    // 2) Populate dependiente de Planta → Zonas
-    floorSel.onchange = () => {
-      const p = floorSel.value;
-      zoneSel.innerHTML = '<option value="">Zona</option>';
-      modSel.innerHTML  = '<option value="">Módulo</option>';
-      roomSel.innerHTML = '<option value="">Habitación</option>';
-      zoneSel.disabled = modSel.disabled = roomSel.disabled = true;
-      if (!p) return;
-      zoneSel.disabled = false;
-      const zonas = [...new Set(
-        bedsData.filter(b=>b.planta===p).map(b=>b.zona)
-      )];
-      zonas.forEach(z => zoneSel.add(new Option(z,z)));
-    };
-
-    // 3) Planta+Zona → Módulos
-    zoneSel.onchange = () => {
-      const p= floorSel.value, z= zoneSel.value;
-      modSel.innerHTML  = '<option value="">Módulo</option>';
-      roomSel.innerHTML = '<option value="">Habitación</option>';
-      modSel.disabled = roomSel.disabled = true;
-      if (!z) return;
-      modSel.disabled = false;
-      const mods = [...new Set(
-        bedsData
-          .filter(b=>b.planta===p&&b.zona===z)
-          .map(b=>b.modulo)
-      )];
-      mods.forEach(m=>modSel.add(new Option(m,m)));
-    };
-
-    // 4) Planta+Zona+Módulo → Habitaciones
-    modSel.onchange = () => {
-      const p= floorSel.value, z= zoneSel.value, m= modSel.value;
-      roomSel.innerHTML = '<option value="">Habitación</option>';
-      roomSel.disabled = true;
-      if (!m) return;
-      roomSel.disabled = false;
-      const rooms = [...new Set(
-        bedsData
-          .filter(b=>b.planta===p&&b.zona===z&&b.modulo===m)
-          .map(b=>b.habitacion)
-      )];
-      rooms.forEach(r=>roomSel.add(new Option(r,r)));
-    };
-
-    // 5) Al pulsar “Consultar”: vuelve a MongoDB con filtros
-    btnSearch.onclick = () => {
-      const qs = new URLSearchParams();
-      if (floorSel.value) qs.set("planta", floorSel.value);
-      if (zoneSel.value)  qs.set("zona",   zoneSel.value);
-      if (modSel.value)   qs.set("modulo", modSel.value);
-      if (roomSel.value)  qs.set("habitacion", roomSel.value);
-
-      fetch(`/api/search-beds?${qs}`)
-        .then(r=>r.json())
-        .then(js=>{
-          listEl.innerHTML = "";
-          (js.beds.length
-            ? js.beds
-            : []
-          ).forEach(b => {
-            const li = document.createElement("li");
-            li.textContent = 
-              `Planta ${b.planta}, Zona ${b.zona}, Módulo ${b.modulo}, ` +
-              `Hab. ${b.habitacion}, Cama ${b.numero}, Estado ${b.estado}` +
-              // Añado aquí los campos nuevos, si existen
-              (b.nombre_alumno
-                ? `, Alumno: ${b.nombre_alumno}`
-                : ''
-              ) +
-              (b.numero_alumno
-                ? `, Nº Alumno: ${b.numero_alumno}`
-                : ''
-              );
-            listEl.appendChild(li);
-          });
-          if (!js.beds.length)
-            listEl.innerHTML = "<li>No hay camas</li>";
-        });
-    };
-  });
-  </script>
 {% endblock %}

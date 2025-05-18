@@ -1,8 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, current_app
+from flask import Blueprint, flash, render_template, request, jsonify, redirect, url_for, current_app, flash
 from app import mongo
-from io import BytesIO
-import pandas as pd
 import os
+import pandas as pd
 
 bp = Blueprint('main', __name__, template_folder='templates')
 
@@ -18,38 +17,84 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+def get_all_beds():
+    # Devuelve una lista de dicts con los campos necesarios desde la colección beds
+    return list(mongo.db.beds.find({}, {"_id": 0}))
+
 @bp.route('/consulta')
 def consulta():
-    return render_template('consulta.html')
+    beds = get_all_beds()
+    planta = request.args.get('planta', '')
+    zona = request.args.get('zona', '')
+    modulo = request.args.get('modulo', '')
+    habitacion = request.args.get('habitacion', '')
+    genero = request.args.get('genero', '')
+    numero_alumno = request.args.get('numero_alumno', '')
+    consultar = 'consultar' in request.args
+
+    plantas = sorted(set(b['planta'] for b in beds))
+    zonas = sorted(set(b['zona'] for b in beds if not planta or b['planta'] == planta))
+    modulos = sorted(set(b['modulo'] for b in beds if (not planta or b['planta'] == planta) and (not zona or b['zona'] == zona)))
+    habitaciones = sorted(set(b['habitacion'] for b in beds if (not planta or b['planta'] == planta) and (not zona or b['zona'] == zona) and (not modulo or b['modulo'] == modulo)))
+    generos = sorted(set(b.get('genero', '') for b in beds if b.get('genero', '')))
+    numeros_alumno = sorted(set(b.get('numero_alumno', '') for b in beds if b.get('numero_alumno', '')))
+
+    if consultar:
+        camas = [
+            dict(b, genero=b.get('genero', ''), numero_alumno=b.get('numero_alumno', ''))
+            for b in beds
+            if (not planta or b['planta'] == planta)
+            and (not zona or b['zona'] == zona)
+            and (not modulo or b['modulo'] == modulo)
+            and (not habitacion or b['habitacion'] == habitacion)
+            and (not genero or b.get('genero', '') == genero)
+            and (not numero_alumno or b.get('numero_alumno', '') == numero_alumno)
+        ]
+    else:
+        camas = []
+
+    return render_template(
+        'consulta.html',
+        plantas=plantas,
+        zonas=zonas,
+        modulos=modulos,
+        habitaciones=habitaciones,
+        generos=generos,
+        numeros_alumno=numeros_alumno,
+        planta=planta,
+        zona=zona,
+        modulo=modulo,
+        habitacion=habitacion,
+        genero=genero,
+        numero_alumno=numero_alumno,
+        camas=camas
+    )
 
 @bp.route('/upload')
 def upload_page():
     return render_template('upload.html')
 
-@bp.route('/update')
-def update():
-    return render_template('update.html')
-
-
 @bp.route("/preview", methods=["POST"])
 def preview():
-    # 1) Recoger el fichero
-    file = request.files.get("file")
+    file = request.files.get("excel")  
     if not file or not allowed_file(file.filename):
+        flash("Ningún archivo seleccionado o formato no permitido.")
         return redirect(url_for("main.upload_page"))
 
-    # 2) Guardar temporalmente
     upload_folder = current_app.config["UPLOAD_FOLDER"]
     os.makedirs(upload_folder, exist_ok=True)
     path = os.path.join(upload_folder, file.filename)
     file.save(path)
 
-    # 3) Leer con pandas usando openpyxl
     df = pd.read_excel(path, engine="openpyxl", dtype=str)
     records = df.to_dict(orient="records")
 
-    # 4) Renderizar la vista previa
     return render_template("preview.html", records=records, filename=file.filename)
+
+# filepath: c:\Users\knigh\Desktop\Prueba\Morpheus\app\routes.py
+from flask import flash
+
+# ...existing code...
 
 @bp.route("/apply-update", methods=["POST"])
 def apply_update():
@@ -59,88 +104,143 @@ def apply_update():
 
     updated = 0
     for _, row in df.iterrows():
-        bed_id = row.get("bed_id")  # Ajusta el nombre de la columna si es distinto
+        bed_id = row.get("bed_id")
+        if bed_id:
+            bed_id = str(bed_id).strip()
         new_vals = {}
-        if "estado" in row:
-            new_vals["estado"] = row["estado"]
-        if "alumno" in row:
-            new_vals["alumno"] = row["alumno"]
-        if new_vals:
+        # Para cada campo que quieras actualizar:
+        for campo in ["estado", "nombre_alumno", "numero_alumno"]:
+            valor = row.get(campo)
+            # Si el valor es NaN o None, lo ponemos como cadena vacía
+            if pd.isna(valor) or valor is None:
+                new_vals[campo] = ""
+            else:
+                new_vals[campo] = str(valor).strip()
+        if bed_id:
             res = mongo.db.beds.update_one({"bed_id": bed_id}, {"$set": new_vals})
-            if res.matched_count:
+            if res.modified_count > 0:
                 updated += 1
 
-    return jsonify(status="success", updated=updated)
+    flash(f"Actualización realizada con éxito. {updated} camas actualizadas.", "success")
+    return render_template("apply_update_result.html", updated=updated)
 
-@bp.route("/api/search-beds")
-def api_search_beds():
-    filtro = {}
-    for campo in ("planta", "zona", "modulo", "habitacion"):
-        val = request.args.get(campo)
-        if val:
-            filtro[campo] = val
-    resultados = list(mongo.db.beds.find(filtro, {"_id": 0}))
-    return jsonify(beds=resultados)
-
-@bp.route('/api/available-beds-count')#Proporciona el número total de camas cuyo estado sea "Desocupada".
-def available_beds_count():
-    count = mongo.db.beds.count_documents({"estado": "Desocupada"})
-    return jsonify({"available_beds": count})
-
-@bp.route('/api/update-bed/<bed_id>', methods=['PUT'])#Actualizar el estado de una cama concreta, identificada por su bed_id.
-def update_bed(bed_id):
-    data = request.get_json()
-    estado = data.get('estado')
-    if not estado:
-        return jsonify({"status": "error", "message": "Falta 'estado'"}), 400
-
-    mongo.db.beds.update_one(
-        {"bed_id": bed_id},
-        {"$set": {"estado": estado}},
-        upsert=True
-    )
-    return jsonify({"status": "success", "message": f"{bed_id}→{estado}"}), 200
 
 @bp.route('/assign', methods=['GET', 'POST'])
 def assign():
+    assign_message = None
+    asignaciones = None
     if request.method == 'POST':
-        # 1) leo el Excel subido en memoria
-        f = request.files.get('file')
-        if not f or not allowed_file(f.filename):
-            return redirect(url_for('main.assign'))
+        total = int(request.form.get('total', 0))
+        asignaciones = []
+        asignados = []
+        for i in range(total):
+            nombre = request.form.get(f'nombre_alumno_{i}')
+            numero = request.form.get(f'numero_alumno_{i}')
+            bed_id = request.form.get(f'bed_id_{i}')
+            asignaciones.append(bed_id)
+            if bed_id:
+                mongo.db.beds.update_one(
+                    {"bed_id": bed_id},
+                    {"$set": {
+                        "estado": "Ocupada",
+                        "nombre_alumno": nombre,
+                        "numero_alumno": numero
+                    }}
+                )
+                asignados.append(bed_id)
+        assign_message = f"{len(asignados)} asignaciones guardadas."
+        # Recargar los datos para mostrar el resultado
+        students = []
+        free_beds = []
+        # Si quieres mostrar los mismos estudiantes y camas, recarga aquí
+        # O redirige a otra página si prefieres
+    else:
+        # GET: muestro el formulario de subida
+        # Debes tener students y free_beds listos aquí
+        # Por ejemplo, puedes obtenerlos de una subida previa o de la base de datos
+        students = []  # Ajusta según tu lógica
+        free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "Desocupada"}, {"_id": 0, "bed_id": 1})]
 
-        df = pd.read_excel(f, engine='openpyxl', dtype=str)
-        students = df.to_dict(orient='records')
+    return render_template(
+        'assign.html',
+        students=students,
+        free_beds=free_beds,
+        assign_message=assign_message,
+        asignaciones=asignaciones
+    )
 
-        # 2) saco las camas libres
-        free_beds = mongo.db.beds.find(
-            {"estado": "Desocupada"},
-            {"_id": 0, "bed_id": 1}
-        )
-        bed_ids = [b['bed_id'] for b in free_beds]
+from flask import session
 
-        # 3) renderizo la tabla de asignaciones
-        return render_template('assign.html',
-                               students=students,
-                               free_beds=bed_ids)
-
-    # GET: muestro el formulario de subida
+@bp.route('/assign-upload', methods=['GET', 'POST'])
+def assign_upload():
+    if request.method == 'POST':
+        # Si es la primera vez, carga el Excel
+        if 'alumnos_excel' in request.files:
+            file = request.files.get("alumnos_excel")
+            if not file or not allowed_file(file.filename):
+                flash("Ningún archivo seleccionado o formato no permitido.")
+                return redirect(url_for("main.assign_upload"))
+            upload_folder = current_app.config["UPLOAD_FOLDER"]
+            os.makedirs(upload_folder, exist_ok=True)
+            path = os.path.join(upload_folder, file.filename)
+            file.save(path)
+            df = pd.read_excel(path, engine="openpyxl", dtype=str)
+            students = df.to_dict(orient="records")
+            session['students'] = students
+        else:
+            students = session.get('students', [])
+        # Recupera las camas seleccionadas
+        total = int(request.form.get('total', len(students)))
+        camas_asignadas = []
+        for i in range(total):
+            bed_id = request.form.get(f'bed_id_{i}')
+            if bed_id:
+                camas_asignadas.append(bed_id)
+        # Excluye las camas ya seleccionadas
+        free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "Desocupada"}, {"_id": 0, "bed_id": 1}) if b['bed_id'] not in camas_asignadas]
+        return render_template('assign_preview.html', students=students, free_beds=free_beds)
     return render_template('assign_upload.html')
 
-@bp.route('/api/apply-assignments', methods=['POST'])
-def apply_assignments():
-    data = request.get_json()
-    for a in data.get('assignments', []):
-        # Para cada asignación, actualizamos el documento:
-        # 1) marcamos la cama como ocupada
-        # 2) guardamos nombre y número de alumno
-        mongo.db.beds.update_one(
-          {"bed_id": a['bed_id']},
-          {"$set": {
-              "estado": "Ocupada",
-              "nombre_alumno": a['nombre_alumno'],
-              "numero_alumno": a['numero_alumno']
-           }}
-        )
-    return jsonify({"message": f"{len(data.get('assignments', []))} asignaciones guardadas."})
+@bp.route('/assign-confirm', methods=['POST'])
+def assign_confirm():
+    students = session.get('students', [])
+    total = int(request.form.get('total', 0))
+    asignados = 0
+    for i in range(total):
+        nombre = request.form.get(f'nombre_alumno_{i}')
+        numero = request.form.get(f'numero_alumno_{i}')
+        genero = request.form.get(f'genero_{i}')  # <-- Añadido
+        bed_id = request.form.get(f'bed_id_{i}')
+        if bed_id:
+            bed_id = bed_id.strip()
+            res = mongo.db.beds.update_one(
+                {"bed_id": bed_id},
+                {"$set": {
+                    "estado": "Ocupada",
+                    "nombre_alumno": nombre if nombre is not None else "",
+                    "numero_alumno": numero if numero is not None else "",
+                    "genero": genero if genero is not None else ""  # <-- Añadido
+                }}
+            )
+            if res.matched_count > 0:
+                asignados += 1
+            else:
+                print(f"No se encontró bed_id: '{bed_id}'")
+    session.pop('students', None)
+    return render_template('assign_result.html', asignados=asignados)
 
+@bp.route('/desocupar-cama', methods=['POST'])
+def desocupar_cama():
+    bed_id = request.form.get('bed_id')
+    if bed_id:
+        mongo.db.beds.update_one(
+            {"bed_id": bed_id},
+            {"$set": {
+                "estado": "Desocupada",
+                "nombre_alumno": "",
+                "numero_alumno": "",
+                "genero": ""  # <-- Añadido para vaciar el género
+            }}
+        )
+        flash(f"Cama {bed_id} desocupada correctamente.", "success")
+    return redirect(request.referrer or url_for('main.consulta'))

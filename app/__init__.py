@@ -13,6 +13,7 @@ def create_app():
         template_folder="templates",
         instance_relative_config=False
     )
+    app.config['SECRET_KEY'] = 'password.1537'
     app.config.from_object('app.config.Config')
 
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)

@@ -1,24 +1,39 @@
 {% extends 'base.html' %}
-{% block title %}Vista Previa Excel{% endblock %}
+{% block title %}Vista previa de cambios{% endblock %}
+
 {% block content %}
 <div class="container">
   <h2>Vista previa de cambios</h2>
-  <form action="{{ url_for('main.apply_update') }}" method="post">
+  {% if records and records|length > 0 %}
     <table>
-      <thead><tr>
-        {% for col in columns %}<th>{{ col }}</th>{% endfor %}
-      </tr></thead>
-      <tbody>
-        {% for row in data %}
+      <thead>
         <tr>
-          {% for col in columns %}
-          <td><input name="{{ col }}_{{ loop.index0 }}" value="{{ row[col] }}"/></td>
-          {% endfor %}
+        <!-- tus columnas -->
+        <th>Acción</th>
         </tr>
-        {% endfor %}
+      </thead>
+      <tbody>
+        {% for cama in camas %}
+        <tr>
+        <!-- tus celdas de cama -->
+        <td>
+          {% if cama.estado == "Ocupada" %}
+        <form method="post" action="{{ url_for('main.desocupar_cama') }}">
+          <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
+          <button type="submit" class="btn btn-warning">Desocupar</button>
+        </form>
+          {% endif %}
+        </td>
+        </tr>
+          {% endfor %}
       </tbody>
     </table>
-    <button type="submit">Aplicar Cambios</button>
-  </form>
+    <form method="post" action="{{ url_for('main.apply_update') }}">
+      <input type="hidden" name="filename" value="{{ filename }}">
+      <button type="submit">Aplicar cambios</button>
+    </form>
+  {% else %}
+    <p>No hay datos para mostrar.</p>
+  {% endif %}
 </div>
 {% endblock %}

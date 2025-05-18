@@ -232,3 +232,48 @@ footer {
     margin-top: 0.5rem;
   }
 }
+
+.select-row {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+}
+
+.select-row select, .select-row button {
+  margin: 0;
+}
+
+.select-row form {
+  display: flex;
+  gap: 1.5em;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.select-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+}
+
+.select-group label {
+  margin-bottom: 0.2em;
+  font-weight: bold;
+}
+
+.select-row button {
+  height: 2.4em;
+  align-self: flex-end;
+}
+
+@media print {
+  header, nav, footer, .select-row, button:not(.print-allowed) {
+    display: none !important;
+  }
+  #bed-list, table {
+    display: block;
+  }
+  .controls {
+    display: block !important;
+  }
+}
