@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 400px; margin: auto; padding: 2em; border: 1px solid #ccc; border-radius: 8px; margin-top: 5em;">
+  <h2 style="text-align: center;">Iniciar Sesión</h2>
+  <form method="post" action="{{ url_for('main.login') }}">
+    <div class="form-group">
+      <label for="nombre">Nombre de Usuario</label>
+      <input type="text" name="nombre" id="nombre" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="contraseña">Contraseña</label>
+      <input type="password" name="contraseña" id="contraseña" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-top: 1em; width: 100%;">Entrar</button>
+  </form>
+</div>
+{% endblock %}

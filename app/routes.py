@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request, jsonify, redirect, url_for, current_app, flash
+from flask import Blueprint, flash, render_template, request, jsonify, redirect, url_for, current_app, flash, session
 from app import mongo
 import os
 import pandas as pd
@@ -91,11 +91,6 @@ def preview():
 
     return render_template("preview.html", records=records, filename=file.filename)
 
-# filepath: c:\Users\knigh\Desktop\Prueba\Morpheus\app\routes.py
-from flask import flash
-
-# ...existing code...
-
 @bp.route("/apply-update", methods=["POST"])
 def apply_update():
     filename = request.form.get("filename")
@@ -108,7 +103,7 @@ def apply_update():
         if bed_id:
             bed_id = str(bed_id).strip()
         new_vals = {}
-        # Para cada campo que quieras actualizar:
+        # Para cada campo que queremos actualizar:
         for campo in ["estado", "nombre_alumno", "numero_alumno"]:
             valor = row.get(campo)
             # Si el valor es NaN o None, lo ponemos como cadena vacía
@@ -152,13 +147,8 @@ def assign():
         # Recargar los datos para mostrar el resultado
         students = []
         free_beds = []
-        # Si quieres mostrar los mismos estudiantes y camas, recarga aquí
-        # O redirige a otra página si prefieres
     else:
-        # GET: muestro el formulario de subida
-        # Debes tener students y free_beds listos aquí
-        # Por ejemplo, puedes obtenerlos de una subida previa o de la base de datos
-        students = []  # Ajusta según tu lógica
+        students = []  
         free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "Desocupada"}, {"_id": 0, "bed_id": 1})]
 
     return render_template(
@@ -168,9 +158,6 @@ def assign():
         assign_message=assign_message,
         asignaciones=asignaciones
     )
-
-from flask import session
-
 @bp.route('/assign-upload', methods=['GET', 'POST'])
 def assign_upload():
     if request.method == 'POST':
@@ -239,8 +226,35 @@ def desocupar_cama():
                 "estado": "Desocupada",
                 "nombre_alumno": "",
                 "numero_alumno": "",
-                "genero": ""  # <-- Añadido para vaciar el género
+                "genero": ""  
             }}
         )
         flash(f"Cama {bed_id} desocupada correctamente.", "success")
     return redirect(request.referrer or url_for('main.consulta'))
+
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        nombre = request.form.get('nombre')
+        contraseña = request.form.get('contraseña')
+        usuario = mongo.db.usuarios.find_one({'nombre': nombre, 'contraseña': contraseña})
+        if usuario:
+            session['usuario'] = usuario['nombre']
+            session['rol'] = usuario['rol']
+            if usuario['rol'] == 'admin':
+                return redirect(url_for('main.panel_admin'))
+            return redirect(url_for('main.index'))
+        else:
+            flash('Credenciales incorrectas', 'danger')
+    return render_template('login.html')
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('main.login'))
+
+@bp.route('/panel-admin')
+def panel_admin():
+    if session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+    return render_template('panel_admin.html')
