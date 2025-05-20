@@ -1,37 +1,56 @@
+<!-- Esta página se abre al pulsar el botón "vista previa" depués de pulsar el link "subir excel"-->
 {% extends 'base.html' %}
 {% block title %}Vista previa de cambios{% endblock %}
 
 {% block content %}
 <div class="container">
   <h2>Vista previa de cambios</h2>
-  {% if records and records|length > 0 %}
+  {% if camas and camas|length > 0 %}
     <table>
       <thead>
         <tr>
-        <!-- tus columnas -->
-        <th>Acción</th>
+          <th>Nombre alumno</th>
+          <th>Número alumno</th>
+          <th>Bed ID</th>
+          <th>Estado</th>
+          <th>Planta</th>
+          <th>Zona</th>
+          <th>Módulo</th>
+          <th>Habitación</th>
+          <th>Número</th>
+          <th>Género</th>
+          <th>Acción</th>
         </tr>
       </thead>
       <tbody>
         {% for cama in camas %}
-        <tr>
-        <!-- tus celdas de cama -->
-        <td>
-          {% if cama.estado == "Ocupada" %}
-        <form method="post" action="{{ url_for('main.desocupar_cama') }}">
-          <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
-          <button type="submit" class="btn btn-warning">Desocupar</button>
-        </form>
-          {% endif %}
-        </td>
-        </tr>
-          {% endfor %}
+          <tr>
+            <td>{{ cama.nombre_alumno }}</td>
+            <td>{{ cama.numero_alumno }}</td>
+            <td>{{ cama.bed_id }}</td>
+            <td>{{ cama.estado }}</td>
+            <td>{{ cama.planta }}</td>
+            <td>{{ cama.zona }}</td>
+            <td>{{ cama.modulo }}</td>
+            <td>{{ cama.habitacion }}</td>
+            <td>{{ cama.numero }}</td>
+            <td>{{ cama.genero }}</td>
+            <td>
+              {% if cama.estado == "Ocupada" %}
+                <form method="post" action="{{ url_for('main.desocupar_cama') }}">
+                  <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
+                  <button type="submit" class="btn btn-warning">Desocupar</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
-    <form method="post" action="{{ url_for('main.apply_update') }}">
-      <input type="hidden" name="filename" value="{{ filename }}">
-      <button type="submit">Aplicar cambios</button>
-    </form>
+      <form method="post" action="{{ url_for('main.apply_update') }}">
+        <input type="hidden" name="filename" value="{{ filename }}">
+        <button type="submit">Aplicar cambios</button>
+      </form>
   {% else %}
     <p>No hay datos para mostrar.</p>
   {% endif %}

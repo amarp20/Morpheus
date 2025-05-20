@@ -14,15 +14,15 @@
     <h1>Control de Alumnos - Cuartel</h1>
     <nav>
       {% if session.get('usuario') %}
-      <span>Bienvenido, {{ session.get('usuario') }}</span>
+        <span>Bienvenido, {{ session.get('usuario') }}</span>
         <a href="{{ url_for('main.index') }}">Inicio</a>
         <a href="{{ url_for('main.consulta') }}">Consultar</a>
-        {% if session.get('rol') != 'mando' %}
+        {% if session.get('rol') == 'admin' %}
           <a href="{{ url_for('main.upload_page') }}">Subir Excel</a>
           <a href="{{ url_for('main.assign_upload') }}">Asignar camas</a>
-        {% endif %}
-        {% if session.get('rol') == 'admin' %}
-          <a href="{{ url_for('main.panel_admin') }}">Panel Admin</a>
+          <a href="{{ url_for('main.gestion_usuarios') }}">Gestión usuarios</a>
+        {% elif session.get('rol') == 'usuario' %}
+          <a href="{{ url_for('main.assign_upload') }}">Asignar camas</a>
         {% endif %}
         <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
       {% else %}

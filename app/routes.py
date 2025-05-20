@@ -2,6 +2,7 @@ from flask import Blueprint, flash, render_template, request, jsonify, redirect,
 from app import mongo
 import os
 import pandas as pd
+from werkzeug.security import generate_password_hash, check_password_hash
 
 bp = Blueprint('main', __name__, template_folder='templates')
 
@@ -69,11 +70,11 @@ def consulta():
         numero_alumno=numero_alumno,
         camas=camas
     )
-
+#Este es el upload de subir excel
 @bp.route('/upload')
 def upload_page():
     return render_template('upload.html')
-
+# Esta es la preview de subir excel
 @bp.route("/preview", methods=["POST"])
 def preview():
     file = request.files.get("excel")  
@@ -89,7 +90,7 @@ def preview():
     df = pd.read_excel(path, engine="openpyxl", dtype=str)
     records = df.to_dict(orient="records")
 
-    return render_template("preview.html", records=records, filename=file.filename)
+    return render_template("preview.html", camas=records, filename=file.filename)
 
 @bp.route("/apply-update", methods=["POST"])
 def apply_update():
@@ -237,8 +238,9 @@ def login():
     if request.method == 'POST':
         nombre = request.form.get('nombre')
         contraseña = request.form.get('contraseña')
-        usuario = mongo.db.usuarios.find_one({'nombre': nombre, 'contraseña': contraseña})
-        if usuario:
+        usuario = mongo.db.usuarios.find_one({'nombre': nombre})
+        
+        if usuario and check_password_hash(usuario['contraseña'], contraseña):
             session['usuario'] = usuario['nombre']
             session['rol'] = usuario['rol']
             if usuario['rol'] == 'admin':
@@ -247,6 +249,7 @@ def login():
         else:
             flash('Credenciales incorrectas', 'danger')
     return render_template('login.html')
+
 
 @bp.route('/logout')
 def logout():
@@ -258,3 +261,49 @@ def panel_admin():
     if session.get('rol') != 'admin':
         return redirect(url_for('main.login'))
     return render_template('panel_admin.html')
+
+@bp.route('/gestion-usuarios', methods=['GET', 'POST'])
+def gestion_usuarios():
+    if session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    accion = request.form.get('accion')
+    usuarios = []
+
+    if accion == "registrar":
+        nombre = request.form.get('nombre')
+        clave = request.form.get('contraseña')
+        confirmar = request.form.get('confirmar')
+        rol = request.form.get('rol')
+
+        if mongo.db.usuarios.find_one({'nombre': nombre}):
+            flash("Ese nombre de usuario ya existe.", "danger")
+        elif clave != confirmar:
+            flash("Las contraseñas no coinciden.", "danger")
+        else:
+            hash_pw = generate_password_hash(clave)
+            mongo.db.usuarios.insert_one({'nombre': nombre, 'contraseña': hash_pw, 'rol': rol})
+            flash("Usuario creado correctamente.", "success")
+
+    elif accion == "consultar":
+        usuarios = list(mongo.db.usuarios.find({}, {'_id': 0, 'nombre': 1, 'rol': 1}))
+
+    elif accion == "cambiar_clave":
+        usuario = request.form.get('usuario')
+        nueva = request.form.get('nueva')
+        confirmar = request.form.get('confirmar')
+        if nueva != confirmar:
+            flash(f"Las contraseñas no coinciden para {usuario}.", "danger")
+        else:
+            hash_pw = generate_password_hash(nueva)
+            mongo.db.usuarios.update_one({'nombre': usuario}, {'$set': {'contraseña': hash_pw}})
+            flash(f"Contraseña actualizada para {usuario}.", "success")
+        usuarios = list(mongo.db.usuarios.find({}, {'_id': 0, 'nombre': 1, 'rol': 1}))
+
+    elif accion == "eliminar":
+        usuario = request.form.get('usuario')
+        mongo.db.usuarios.delete_one({'nombre': usuario})
+        flash(f"Usuario {usuario} eliminado.", "success")
+        usuarios = list(mongo.db.usuarios.find({}, {'_id': 0, 'nombre': 1, 'rol': 1}))
+
+    return render_template('gestion_usuarios.html', usuarios=usuarios)
