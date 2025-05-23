@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Vista previa del archivo{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 2em;">
+  <h2>Vista previa del archivo</h2>
+  {% if registros %}
+    <form method="post" action="{{ url_for('main.gestion_edificio_apply') }}">
+      <input type="hidden" name="filename" value="{{ filename }}">
+      <input type="hidden" name="eliminar_anteriores" value="{{ eliminar_anteriores }}">
+      <table>
+        <thead>
+          <tr>
+            <th>Planta</th>
+            <th>Zona</th>
+            <th>Módulo</th>
+            <th>Habitación</th>
+            <th>Cama Nº</th>
+            <th>Apellido1</th>
+            <th>Apellido2</th>
+            <th>Brigada</th>
+            <th>Especialidad</th>
+            <th>Género</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in registros %}
+            <tr>
+              <td>{{ r.planta }}</td>
+              <td>{{ r.zona }}</td>
+              <td>{{ r.modulo }}</td>
+              <td>{{ r.habitacion }}</td>
+              <td>{{ r.numero }}</td>
+              <td>{{ r.apellido1 }}</td>
+              <td>{{ r.apellido2 }}</td>
+              <td>{{ r.brigada }}</td>
+              <td>{{ r.especialidad }}</td>
+              <td>{{ r.genero }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-success" style="margin-top: 1em;">Aplicar cambios</button>
+    </form>
+  {% else %}
+    <p>No se encontraron registros en el archivo.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -20,9 +20,12 @@
         {% if session.get('rol') == 'admin' %}
           <a href="{{ url_for('main.upload_page') }}">Subir Excel</a>
           <a href="{{ url_for('main.assign_upload') }}">Asignar camas</a>
+          <a href="{{ url_for('main.eliminar_brigada') }}">Eliminar brigada</a>
           <a href="{{ url_for('main.gestion_usuarios') }}">Gestión usuarios</a>
+          <a href="{{ url_for('main.gestion_edificio') }}">Gestión edificio</a>
         {% elif session.get('rol') == 'usuario' %}
           <a href="{{ url_for('main.assign_upload') }}">Asignar camas</a>
+          <a href="{{ url_for('main.eliminar_brigada') }}">Eliminar brigada</a>
         {% endif %}
         <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
       {% else %}

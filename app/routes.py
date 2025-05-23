@@ -3,6 +3,7 @@ from app import mongo
 import os
 import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
 
 bp = Blueprint('main', __name__, template_folder='templates')
 
@@ -31,6 +32,7 @@ def consulta():
     habitacion = request.args.get('habitacion', '')
     genero = request.args.get('genero', '')
     numero_alumno = request.args.get('numero_alumno', '')
+    brigada = request.args.get('brigada', '')
     consultar = 'consultar' in request.args
 
     plantas = sorted(set(b['planta'] for b in beds))
@@ -39,6 +41,8 @@ def consulta():
     habitaciones = sorted(set(b['habitacion'] for b in beds if (not planta or b['planta'] == planta) and (not zona or b['zona'] == zona) and (not modulo or b['modulo'] == modulo)))
     generos = sorted(set(b.get('genero', '') for b in beds if b.get('genero', '')))
     numeros_alumno = sorted(set(b.get('numero_alumno', '') for b in beds if b.get('numero_alumno', '')))
+    brigadas = sorted(set(b.get('brigada', '') for b in beds if b.get('brigada')))
+
 
     if consultar:
         camas = [
@@ -50,6 +54,7 @@ def consulta():
             and (not habitacion or b['habitacion'] == habitacion)
             and (not genero or b.get('genero', '') == genero)
             and (not numero_alumno or b.get('numero_alumno', '') == numero_alumno)
+            and (not brigada or b.get('brigada', '') == brigada)
         ]
     else:
         camas = []
@@ -68,7 +73,10 @@ def consulta():
         habitacion=habitacion,
         genero=genero,
         numero_alumno=numero_alumno,
-        camas=camas
+        camas=camas,
+        brigada=brigada,
+        brigadas=brigadas,
+
     )
 #Este es el upload de subir excel
 @bp.route('/upload')
@@ -104,14 +112,19 @@ def apply_update():
         if bed_id:
             bed_id = str(bed_id).strip()
         new_vals = {}
-        # Para cada campo que queremos actualizar:
-        for campo in ["estado", "nombre_alumno", "numero_alumno"]:
+
+        campos_actualizables = [
+            "estado", "nombre_alumno", "numero_alumno",
+            "apellido1", "apellido2", "brigada", "especialidad", "genero"
+        ]
+
+        for campo in campos_actualizables:
             valor = row.get(campo)
-            # Si el valor es NaN o None, lo ponemos como cadena vacía
             if pd.isna(valor) or valor is None:
                 new_vals[campo] = ""
             else:
                 new_vals[campo] = str(valor).strip()
+
         if bed_id:
             res = mongo.db.beds.update_one({"bed_id": bed_id}, {"$set": new_vals})
             if res.modified_count > 0:
@@ -159,6 +172,7 @@ def assign():
         assign_message=assign_message,
         asignaciones=asignaciones
     )
+#este bp realiza la carga de datos de la base de datos 
 @bp.route('/assign-upload', methods=['GET', 'POST'])
 def assign_upload():
     if request.method == 'POST':
@@ -186,37 +200,58 @@ def assign_upload():
                 camas_asignadas.append(bed_id)
         # Excluye las camas ya seleccionadas
         free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "Desocupada"}, {"_id": 0, "bed_id": 1}) if b['bed_id'] not in camas_asignadas]
-        return render_template('assign_preview.html', students=students, free_beds=free_beds)
+        return render_template('assign_preview.html', students=students, free_beds=free_beds, camas_asignadas=camas_asignadas)
     return render_template('assign_upload.html')
-
+#Este bp es el que realiza los cambios en la base de datos una vez confirmamos los cambios al asignar camas
 @bp.route('/assign-confirm', methods=['POST'])
 def assign_confirm():
     students = session.get('students', [])
     total = int(request.form.get('total', 0))
     asignados = 0
+    asignacion_info = []  # ← FUERA del bucle
+
     for i in range(total):
         nombre = request.form.get(f'nombre_alumno_{i}')
         numero = request.form.get(f'numero_alumno_{i}')
-        genero = request.form.get(f'genero_{i}')  # <-- Añadido
+        apellido1 = request.form.get(f'apellido1_{i}')
+        apellido2 = request.form.get(f'apellido2_{i}')
+        brigada = request.form.get(f'brigada_{i}')
+        especialidad = request.form.get(f'especialidad_{i}')
+        genero = request.form.get(f'genero_{i}')
         bed_id = request.form.get(f'bed_id_{i}')
+
         if bed_id:
             bed_id = bed_id.strip()
             res = mongo.db.beds.update_one(
                 {"bed_id": bed_id},
                 {"$set": {
                     "estado": "Ocupada",
-                    "nombre_alumno": nombre if nombre is not None else "",
-                    "numero_alumno": numero if numero is not None else "",
-                    "genero": genero if genero is not None else ""  # <-- Añadido
+                    "nombre_alumno": nombre or "",
+                    "numero_alumno": numero or "",
+                    "apellido1": apellido1 or "",
+                    "apellido2": apellido2 or "",
+                    "brigada": brigada or "",
+                    "especialidad": especialidad or "",
+                    "genero": genero or ""
                 }}
             )
             if res.matched_count > 0:
                 asignados += 1
+                asignacion_info.append({
+                    "nombre": nombre,
+                    "apellido1": apellido1,
+                    "apellido2": apellido2,
+                    "numero": numero,
+                    "brigada": brigada,
+                    "especialidad": especialidad,
+                    "bed_id": bed_id
+                })
             else:
                 print(f"No se encontró bed_id: '{bed_id}'")
-    session.pop('students', None)
-    return render_template('assign_result.html', asignados=asignados)
 
+    session.pop('students', None)
+    return render_template("assign_result.html", asignados=asignados, asignaciones=asignacion_info)
+#este bp desocupa las camas una vez realizada una consulta pulsando el botón desocupar
 @bp.route('/desocupar-cama', methods=['POST'])
 def desocupar_cama():
     bed_id = request.form.get('bed_id')
@@ -232,7 +267,7 @@ def desocupar_cama():
         )
         flash(f"Cama {bed_id} desocupada correctamente.", "success")
     return redirect(request.referrer or url_for('main.consulta'))
-
+#Este bp redirecciona a la página correspondiente depues de loguearse
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -249,19 +284,18 @@ def login():
         else:
             flash('Credenciales incorrectas', 'danger')
     return render_template('login.html')
-
-
+#este bp redirige a login después de cerrar sesión
 @bp.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('main.login'))
-
+#este bp indica la ruta al panel admin
 @bp.route('/panel-admin')
 def panel_admin():
     if session.get('rol') != 'admin':
         return redirect(url_for('main.login'))
     return render_template('panel_admin.html')
-
+#Este bp añade, elimina, consulta y cambia claves desde el panel admin
 @bp.route('/gestion-usuarios', methods=['GET', 'POST'])
 def gestion_usuarios():
     if session.get('rol') != 'admin':
@@ -307,3 +341,176 @@ def gestion_usuarios():
         usuarios = list(mongo.db.usuarios.find({}, {'_id': 0, 'nombre': 1, 'rol': 1}))
 
     return render_template('gestion_usuarios.html', usuarios=usuarios)
+#Este bp es para buscar los datos en la base de datos para mostrar en los desplegables
+@bp.route('/gestion-edificio')
+def gestion_edificio():
+    if session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    camas = []  # vacías por defecto
+    plantas = sorted(mongo.db.beds.distinct("planta"))
+    zonas = sorted(mongo.db.beds.distinct("zona"))
+    modulos = sorted(mongo.db.beds.distinct("modulo"))
+
+    return render_template('gestion_edificio.html', camas=camas, plantas=plantas, zonas=zonas, modulos=modulos)
+
+#Este bp es para previsualizar la configuración del edificio antes de aplicarla
+@bp.route('/gestion-edificio/preview', methods=['POST'])
+def gestion_edificio_preview():
+    if session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    file = request.files.get('edificio_excel')
+
+    if not file or not file.filename.endswith(('.xlsx', '.xls')):
+        flash("Archivo inválido o no seleccionado.", "danger")
+        return redirect(url_for('main.gestion_edificio'))
+
+    filename = f"{uuid.uuid4().hex}.xlsx"
+    path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    file.save(path)
+
+    df = pd.read_excel(path, engine='openpyxl', dtype=str)
+    registros = df.to_dict(orient='records')
+
+    session['gestion_edificio_tempfile'] = filename
+
+    return render_template('gestion_edificio_preview.html', registros=registros, filename=filename)
+#Este bp es para cambiar la configuración del edificio en la base de datos
+@bp.route('/gestion-edificio/apply', methods=['POST'])
+def gestion_edificio_apply():
+    if session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    filename = session.get('gestion_edificio_tempfile')
+
+    if not filename:
+        flash("No se encontró archivo para aplicar.", "danger")
+        return redirect(url_for('main.gestion_edificio'))
+
+    path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    try:
+        df = pd.read_excel(path, engine='openpyxl', dtype={"planta": str, "zona": str, "modulo": str, "habitacion": str, "numero": int})
+
+        total_agregadas = 0
+
+        for _, row in df.iterrows():
+            planta = str(row.get('planta', '')).strip()
+            zona = str(row.get('zona', '')).strip()
+            modulo = str(row.get('modulo', '')).strip()
+            habitacion = str(row.get('habitacion', '')).strip()
+            numero = row.get('numero', 0)
+            bed_id = f"{planta}-{zona}-{modulo}-{habitacion}-Cama{numero}"
+
+            if not mongo.db.beds.find_one({"bed_id": bed_id}):
+                cama = {
+                    "bed_id": bed_id,
+                    "planta": planta,
+                    "zona": zona,
+                    "modulo": modulo,
+                    "habitacion": habitacion,
+                    "numero": numero,
+                    "estado": "Desocupada",
+                    "nombre_alumno": "",
+                    "numero_alumno": "",
+                    "apellido1": "",
+                    "apellido2": "",
+                    "brigada": "",
+                    "especialidad": "",
+                    "genero": ""
+                }
+                mongo.db.beds.insert_one(cama)
+                total_agregadas += 1
+
+        os.remove(path)
+        session.pop('gestion_edificio_tempfile', None)
+
+        flash(f"Proceso completado. {total_agregadas} camas añadidas.", "success")
+    except Exception as e:
+        flash(f"Error al aplicar cambios: {str(e)}", "danger")
+
+    return redirect(url_for('main.gestion_edificio'))
+#bp para filtrar camas a mostrar para eliminar luego
+@bp.route('/gestion-edificio/filtrar', methods=['POST'])
+def gestion_edificio_filtrar():
+    if session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    planta = request.form.get('planta', '').strip()
+    zona = request.form.get('zona', '').strip()
+    modulo = request.form.get('modulo', '').strip()
+
+    query = {}
+    if planta:
+        query["planta"] = planta
+    if zona:
+        query["zona"] = zona
+    if modulo:
+        query["modulo"] = modulo
+
+    camas = list(mongo.db.beds.find(query, {"_id": 0}))
+    plantas = sorted(mongo.db.beds.distinct("planta"))
+    zonas = sorted(mongo.db.beds.distinct("zona"))
+    modulos = sorted(mongo.db.beds.distinct("modulo"))
+
+    return render_template("gestion_edificio.html", camas=camas, plantas=plantas, zonas=zonas, modulos=modulos)
+
+#bp para eliminar camas individualmente
+@bp.route('/eliminar-cama', methods=['POST'])
+def eliminar_cama():
+    if session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    bed_id = request.form.get('bed_id')
+    planta = request.form.get('planta', '').strip()
+    zona = request.form.get('zona', '').strip()
+    modulo = request.form.get('modulo', '').strip()
+
+    query = {}
+    if planta:
+        query["planta"] = planta
+    if zona:
+        query["zona"] = zona
+    if modulo:
+        query["modulo"] = modulo
+
+    if bed_id:
+        result = mongo.db.beds.delete_one({"bed_id": bed_id})
+        if result.deleted_count > 0:
+            flash(f"Cama {bed_id} eliminada correctamente.", "success")
+        else:
+            flash(f"No se encontró la cama {bed_id}.", "danger")
+
+    camas = list(mongo.db.beds.find(query, {"_id": 0}))
+    plantas = sorted(mongo.db.beds.distinct("planta"))
+    zonas = sorted(mongo.db.beds.distinct("zona"))
+    modulos = sorted(mongo.db.beds.distinct("modulo"))
+
+    return render_template("gestion_edificio.html", camas=camas, plantas=plantas, zonas=zonas, modulos=modulos)
+#Este bp sirve para desocupar todas las camas de una brigada
+@bp.route('/eliminar-brigada', methods=['GET', 'POST'])
+def eliminar_brigada():
+    if session.get('rol') not in ['admin', 'usuario']:
+        return redirect(url_for('main.login'))
+
+    if request.method == 'POST':
+        brigada = request.form.get('brigada')
+        if brigada:
+            result = mongo.db.beds.update_many(
+                {"brigada": brigada},
+                {"$set": {
+                    "nombre_alumno": "",
+                    "numero_alumno": "",
+                    "apellido1": "",
+                    "apellido2": "",
+                    "genero": "",
+                    "especialidad": "",
+                    "brigada": "",
+                    "estado": "Desocupada"
+                }}
+            )
+            flash(f"{result.modified_count} camas actualizadas para brigada {brigada}.", "success")
+            return redirect(url_for('main.eliminar_brigada'))
+
+    brigadas = sorted(mongo.db.beds.distinct("brigada"))
+    return render_template("eliminar_brigada.html", brigadas=brigadas)

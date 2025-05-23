@@ -1,12 +1,28 @@
 <!-- Esta página es la que se muestra al presionar el link "subir excel" -->
 {% extends 'base.html' %}
-{% block title %}Subir Excel{% endblock %}
+{% block title %}Subir Excel - Actualizar camas{% endblock %}
+
 {% block content %}
-<div class="container">
-  <h2>Subir y actualizar desde Excel</h2>
+<div class="container" style="max-width: 500px; margin: auto; padding: 2em; border: 1px solid #ccc; border-radius: 8px; margin-top: 2em;">
+  <h2 style="text-align: center;">Actualizar camas desde Excel</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
   <form action="{{ url_for('main.preview') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="excel" accept=".xlsx,.xls"/>
-    <button type="submit">Vista Previa</button>
+    <div class="form-group">
+      <label for="excel">Selecciona archivo (.xlsx, .xls)</label>
+      <input type="file" name="excel" accept=".xlsx,.xls" class="form-control" required>
+    </div>
+    <p class="text-muted" style="font-size: 0.9em; margin-top: 0.5em;">
+      El archivo debe contener la columna <strong>bed_id</strong> y opcionalmente:
+      <br><code>estado</code>, <code>nombre_alumno</code>, <code>numero_alumno</code>,
+      <code>apellido1</code>, <code>apellido2</code>, <code>brigada</code>, <code>especialidad</code>, <code>genero</code>.
+    </p>
+    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1em;">Vista previa</button>
   </form>
 </div>
 {% endblock %}

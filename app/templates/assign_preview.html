@@ -8,8 +8,12 @@
     <table>
       <thead>
         <tr>
-          <th>Nombre Alumno</th>
-          <th>Número Alumno</th>
+          <th>Nombre</th>
+          <th>Apellido 1</th>
+          <th>Apellido 2</th>
+          <th>Nº Alumno</th>
+          <th>Brigada</th>
+          <th>Especialidad</th>
           <th>Género</th>
           <th>Bed ID</th>
         </tr>
@@ -23,8 +27,24 @@
             {{ s.nombre_alumno }}
           </td>
           <td>
+            <input type="hidden" name="apellido1_{{ loop.index0 }}" value="{{ s.apellido1 }}">
+            {{ s.apellido1 }}
+          </td>
+          <td>
+            <input type="hidden" name="apellido2_{{ loop.index0 }}" value="{{ s.apellido2 }}">
+            {{ s.apellido2 }}
+          </td>
+          <td>
             <input type="hidden" name="numero_alumno_{{ loop.index0 }}" value="{{ s.numero_alumno }}">
             {{ s.numero_alumno }}
+          </td>
+          <td>
+            <input type="hidden" name="brigada_{{ loop.index0 }}" value="{{ s.brigada }}">
+            {{ s.brigada }}
+          </td>
+          <td>
+            <input type="hidden" name="especialidad_{{ loop.index0 }}" value="{{ s.especialidad }}">
+            {{ s.especialidad }}
           </td>
           <td>
             <input type="hidden" name="genero_{{ loop.index0 }}" value="{{ s.genero }}">
@@ -36,8 +56,7 @@
               <option value="">--Selecciona cama--</option>
               {% for bed_id in free_beds %}
                 {% if bed_id not in camas_asignadas or bed_id == seleccionada %}
-                  <option value="{{ bed_id }}"
-                    {% if seleccionada == bed_id %}selected{% endif %}>
+                  <option value="{{ bed_id }}" {% if seleccionada == bed_id %}selected{% endif %}>
                     {{ bed_id }}
                   </option>
                 {% endif %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Gestión del Edificio{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin: auto; padding: 2em; border: 1px solid #ccc; border-radius: 8px; margin-top: 2em;">
+  <h2 style="text-align: center;">Subir configuración de camas</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="post" action="{{ url_for('main.gestion_edificio_preview') }}" enctype="multipart/form-data">
+    <input type="file" name="edificio_excel" accept=".xlsx,.xls" required><br><br>
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Vista previa</button>
+  </form>
+</div>
+<hr>
+<div class="container" style="max-width: 500px; margin: auto; margin-top: 2em;">
+  <h2 style="text-align:center;">Eliminar camas individualmente</h2>
+
+  <form method="post" action="{{ url_for('main.gestion_edificio_filtrar') }}">
+    <div class="form-group">
+      <label for="planta">Planta:</label>
+      <select name="planta" class="form-control">
+        <option value="">Todas</option>
+        {% for p in plantas %}
+        <option value="{{ p }}">{{ p }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="zona">Zona:</label>
+      <select name="zona" class="form-control">
+        <option value="">Todas</option>
+        {% for z in zonas %}
+        <option value="{{ z }}">{{ z }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="modulo">Módulo:</label>
+      <select name="modulo" class="form-control">
+        <option value="">Todos</option>
+        {% for m in modulos %}
+        <option value="{{ m }}">{{ m }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-warning" style="margin-top:1em;">Buscar camas</button>
+  </form>
+</div>
+
+{% if camas %}
+<div class="container" style="margin-top: 2em;">
+  <h3>Camas encontradas</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Bed ID</th>
+        <th>Planta</th>
+        <th>Zona</th>
+        <th>Módulo</th>
+        <th>Habitación</th>
+        <th>Cama</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cama in camas %}
+      <tr>
+        <td>{{ cama.bed_id }}</td>
+        <td>{{ cama.planta }}</td>
+        <td>{{ cama.zona }}</td>
+        <td>{{ cama.modulo }}</td>
+        <td>{{ cama.habitacion }}</td>
+        <td>{{ cama.numero }}</td>
+        <td>
+          <form method="post" action="{{ url_for('main.eliminar_cama') }}">
+                <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
+                <input type="hidden" name="planta" value="{{ request.form.get('planta', '') }}">
+                <input type="hidden" name="zona" value="{{ request.form.get('zona', '') }}">
+                <input type="hidden" name="modulo" value="{{ request.form.get('modulo', '') }}">
+
+            <button type="submit" onclick="return confirm('¿Eliminar cama {{ cama.bed_id }}?')">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

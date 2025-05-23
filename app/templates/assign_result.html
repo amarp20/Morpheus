@@ -1,10 +1,37 @@
 <!-- Esta página se abre después de pulsar el link "asignar camas", "previsualizar", pulsar botón "consultar asignaciones" y pulsar botón "confirmar asignaciones"-->
 {% extends 'base.html' %}
 {% block title %}Resultado de asignación{% endblock %}
+
 {% block content %}
 <div class="container">
   <h2>Asignación completada</h2>
   <p>{{ asignados }} camas asignadas correctamente.</p>
+
+  {% if asignaciones %}
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre completo</th>
+        <th>Nº Alumno</th>
+        <th>Brigada</th>
+        <th>Especialidad</th>
+        <th>Cama asignada</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in asignaciones %}
+      <tr>
+        <td>{{ a.nombre }} {{ a.apellido1 }} {{ a.apellido2 }}</td>
+        <td>{{ a.numero }}</td>
+        <td>{{ a.brigada }}</td>
+        <td>{{ a.especialidad }}</td>
+        <td>{{ a.bed_id }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
   <a href="{{ url_for('main.assign_upload') }}">Volver a asignar</a>
 </div>
 {% endblock %}

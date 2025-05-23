@@ -61,6 +61,15 @@
               {% endfor %}
             </select>
           </div>
+          <div class="select-group">
+            <label for="brigada">Brigada</label>
+            <select id="brigada" name="brigada" onchange="this.form.submit()">
+              <option value="">Todas</option>
+              {% for b in brigadas %}
+                <option value="{{ b }}" {% if brigada == b %}selected{% endif %}>{{ b }}</option>
+              {% endfor %}
+            </select>
+          </div>
           <button type="submit" name="consultar" value="1">Consultar</button>
         </form>
       </div>
@@ -70,10 +79,14 @@
           {% for cama in camas %}
             <li>
               Planta {{ cama.planta }}, Zona {{ cama.zona }}, Módulo {{ cama.modulo }}, Hab. {{ cama.habitacion }}, 
-              Cama {{ cama.bed_id }}, Estado {{ cama.estado }},
-              {% if cama.genero %}Género: {{ cama.genero }},{% endif %}
+              Cama {{ cama.numero }}, Estado {{ cama.estado }}
+              {% if cama.brigada %}, Brigada: {{ cama.brigada }}{% endif %}
+              {% if cama.genero %} - Género: {{ cama.genero }}{% endif %}
+
               {% if cama.estado == "Ocupada" %}
-                Alumno: {{ cama.nombre_alumno }}, Nº Alumno: {{ cama.numero_alumno }}
+                <br>Alumno: {{ cama.nombre_alumno }} {{ cama.apellido1 }} {{ cama.apellido2 }}
+                <br>Nº Alumno: {{ cama.numero_alumno }}
+                <br>Brigada: {{ cama.brigada }} - Especialidad: {{ cama.especialidad }}
                 <form method="post" action="{{ url_for('main.desocupar_cama') }}" style="display:inline;">
                   <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
                   <button type="submit" class="btn btn-warning btn-sm">Desocupar</button>
