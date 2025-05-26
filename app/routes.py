@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+from functools import wraps
 
 bp = Blueprint('main', __name__, template_folder='templates')
 
@@ -15,15 +16,58 @@ def allowed_file(filename):
         and filename.rsplit(".", 1)[1].lower() in ALLOWED
     )
 
+def login_requerido(f):
+    @wraps(f)
+    def decorado(*args, **kwargs):
+        print("✔️ Verificando sesión de usuario...")
+        if not session.get('usuario'):
+            flash("Acceso no permitido. Inicia sesión.", "danger")
+            return redirect(url_for('main.login'))
+        return f(*args, **kwargs)
+    return decorado
+
+def rol_requerido(*roles):
+    def decorador(f):
+        @wraps(f)
+        def decorado(*args, **kwargs):
+            if not session.get('usuario'):
+                flash("Acceso no permitido. Inicia sesión.", "danger")
+                return redirect(url_for('main.login'))
+            if session.get('rol') not in roles:
+                flash("No tiene privilegios para acceder a esta sección.", "warning")
+                return redirect(url_for('main.panel'))
+            return f(*args, **kwargs)
+        return decorado
+    return decorador
+
 @bp.route('/')
 def index():
-    return render_template('index.html')
+    if 'usuario' in session:
+        return redirect(url_for('main.panel'))
+    return redirect(url_for('main.login'))
 
+    
 def get_all_beds():
-    # Devuelve una lista de dicts con los campos necesarios desde la colección beds
-    return list(mongo.db.beds.find({}, {"_id": 0}))
+    return list(mongo.db.beds.find({}, {
+        "_id": 0,
+        "bed_id": 1,
+        "planta": 1,
+        "zona": 1,
+        "modulo": 1,
+        "habitacion": 1,
+        "numero": 1,
+        "estado": 1,
+        "nombre_alumno": 1,
+        "apellido1": 1,
+        "apellido2": 1,
+        "brigada": 1,
+        "especialidad": 1,
+        "numero_alumno": 1,
+        "genero": 1
+    }))
 
 @bp.route('/consulta')
+@login_requerido
 def consulta():
     beds = get_all_beds()
     planta = request.args.get('planta', '')
@@ -80,9 +124,17 @@ def consulta():
     )
 #Este es el upload de subir excel
 @bp.route('/upload')
+@rol_requerido('admin')
 def upload_page():
     return render_template('upload.html')
+
 # Esta es la preview de subir excel
+@bp.route('/preview', methods=['GET'])
+def preview_redirect():
+    flash("Acceso no permitido", "danger")
+    return redirect(url_for('main.login'))
+
+@rol_requerido('admin')
 @bp.route("/preview", methods=["POST"])
 def preview():
     file = request.files.get("excel")  
@@ -100,7 +152,14 @@ def preview():
 
     return render_template("preview.html", camas=records, filename=file.filename)
 
+#Con este bp se aplican los cambios de subir excel
+@bp.route('/apply-update', methods=['GET'])
+def apply_update_redirect():
+    flash("Acceso no permitido", "danger")
+    return redirect(url_for('main.login'))
+
 @bp.route("/apply-update", methods=["POST"])
+@rol_requerido('admin')
 def apply_update():
     filename = request.form.get("filename")
     path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
@@ -133,8 +192,9 @@ def apply_update():
     flash(f"Actualización realizada con éxito. {updated} camas actualizadas.", "success")
     return render_template("apply_update_result.html", updated=updated)
 
-
+#Este bp inicia el asignar camas
 @bp.route('/assign', methods=['GET', 'POST'])
+@rol_requerido('admin', 'usuario')
 def assign():
     assign_message = None
     asignaciones = None
@@ -174,6 +234,7 @@ def assign():
     )
 #este bp realiza la carga de datos de la base de datos 
 @bp.route('/assign-upload', methods=['GET', 'POST'])
+@rol_requerido('admin', 'usuario')
 def assign_upload():
     if request.method == 'POST':
         # Si es la primera vez, carga el Excel
@@ -202,13 +263,20 @@ def assign_upload():
         free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "Desocupada"}, {"_id": 0, "bed_id": 1}) if b['bed_id'] not in camas_asignadas]
         return render_template('assign_preview.html', students=students, free_beds=free_beds, camas_asignadas=camas_asignadas)
     return render_template('assign_upload.html')
+
 #Este bp es el que realiza los cambios en la base de datos una vez confirmamos los cambios al asignar camas
+@bp.route('/assign-confirm', methods=['GET'])
+def assign_confirm_redirect():
+    flash("Acceso no permitido", "danger")
+    return redirect(url_for('main.login'))
+
 @bp.route('/assign-confirm', methods=['POST'])
+@rol_requerido('admin', 'usuario')
 def assign_confirm():
     students = session.get('students', [])
     total = int(request.form.get('total', 0))
     asignados = 0
-    asignacion_info = []  # ← FUERA del bucle
+    asignacion_info = []
 
     for i in range(total):
         nombre = request.form.get(f'nombre_alumno_{i}')
@@ -251,8 +319,15 @@ def assign_confirm():
 
     session.pop('students', None)
     return render_template("assign_result.html", asignados=asignados, asignaciones=asignacion_info)
+
 #este bp desocupa las camas una vez realizada una consulta pulsando el botón desocupar
-@bp.route('/desocupar-cama', methods=['POST'])
+@bp.route('/desocupar', methods=['GET'])
+def desocupar_redirect():
+    flash("Acceso no permitido", "danger")
+    return redirect(url_for('main.login'))
+
+@login_requerido
+@bp.route('/desocupar', methods=['POST'])
 def desocupar_cama():
     bed_id = request.form.get('bed_id')
     if bed_id:
@@ -262,11 +337,25 @@ def desocupar_cama():
                 "estado": "Desocupada",
                 "nombre_alumno": "",
                 "numero_alumno": "",
-                "genero": ""  
+                "apellido1": "",
+                "apellido2": "",
+                "genero": "",
+                "especialidad": "",
+                "brigada": ""
             }}
         )
-        flash(f"Cama {bed_id} desocupada correctamente.", "success")
-    return redirect(request.referrer or url_for('main.consulta'))
+        flash(f'Cama {bed_id} desocupada correctamente.', 'success')
+
+    return redirect(url_for('main.consulta',
+        planta=request.form.get('planta', ''),
+        zona=request.form.get('zona', ''),
+        modulo=request.form.get('modulo', ''),
+        habitacion=request.form.get('habitacion', ''),
+        genero=request.form.get('genero', ''),
+        numero_alumno=request.form.get('numero_alumno', ''),
+        brigada=request.form.get('brigada', ''),
+        consultar=1
+    ))
 #Este bp redirecciona a la página correspondiente depues de loguearse
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -278,29 +367,22 @@ def login():
         if usuario and check_password_hash(usuario['contraseña'], contraseña):
             session['usuario'] = usuario['nombre']
             session['rol'] = usuario['rol']
-            if usuario['rol'] == 'admin':
-                return redirect(url_for('main.panel_admin'))
-            return redirect(url_for('main.index'))
+            return redirect(url_for('main.panel'))
         else:
             flash('Credenciales incorrectas', 'danger')
     return render_template('login.html')
+
 #este bp redirige a login después de cerrar sesión
 @bp.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('main.login'))
-#este bp indica la ruta al panel admin
-@bp.route('/panel-admin')
-def panel_admin():
-    if session.get('rol') != 'admin':
-        return redirect(url_for('main.login'))
-    return render_template('panel_admin.html')
+
 #Este bp añade, elimina, consulta y cambia claves desde el panel admin
 @bp.route('/gestion-usuarios', methods=['GET', 'POST'])
+@rol_requerido('admin')
 def gestion_usuarios():
-    if session.get('rol') != 'admin':
-        return redirect(url_for('main.login'))
-
+    
     accion = request.form.get('accion')
     usuarios = []
 
@@ -341,11 +423,11 @@ def gestion_usuarios():
         usuarios = list(mongo.db.usuarios.find({}, {'_id': 0, 'nombre': 1, 'rol': 1}))
 
     return render_template('gestion_usuarios.html', usuarios=usuarios)
+
 #Este bp es para buscar los datos en la base de datos para mostrar en los desplegables
 @bp.route('/gestion-edificio')
+@rol_requerido('admin')
 def gestion_edificio():
-    if session.get('rol') != 'admin':
-        return redirect(url_for('main.login'))
 
     camas = []  # vacías por defecto
     plantas = sorted(mongo.db.beds.distinct("planta"))
@@ -355,10 +437,14 @@ def gestion_edificio():
     return render_template('gestion_edificio.html', camas=camas, plantas=plantas, zonas=zonas, modulos=modulos)
 
 #Este bp es para previsualizar la configuración del edificio antes de aplicarla
+@bp.route('/gestion-edificio/preview', methods=['GET'])
+def gestion_edificio_preview_redirect():
+    flash("Acceso no permitido", "danger")
+    return redirect(url_for('main.login'))
+
+@rol_requerido('admin')
 @bp.route('/gestion-edificio/preview', methods=['POST'])
 def gestion_edificio_preview():
-    if session.get('rol') != 'admin':
-        return redirect(url_for('main.login'))
 
     file = request.files.get('edificio_excel')
 
@@ -376,11 +462,16 @@ def gestion_edificio_preview():
     session['gestion_edificio_tempfile'] = filename
 
     return render_template('gestion_edificio_preview.html', registros=registros, filename=filename)
+
 #Este bp es para cambiar la configuración del edificio en la base de datos
+@bp.route('/gestion-edificio/apply', methods=['GET'])
+def gestion_edificio_apply_redirect():
+    flash("Acceso no permitido", "danger")
+    return redirect(url_for('main.login'))
+
+@rol_requerido('admin')
 @bp.route('/gestion-edificio/apply', methods=['POST'])
 def gestion_edificio_apply():
-    if session.get('rol') != 'admin':
-        return redirect(url_for('main.login'))
 
     filename = session.get('gestion_edificio_tempfile')
 
@@ -430,36 +521,57 @@ def gestion_edificio_apply():
         flash(f"Error al aplicar cambios: {str(e)}", "danger")
 
     return redirect(url_for('main.gestion_edificio'))
+
 #bp para filtrar camas a mostrar para eliminar luego
+@bp.route('/gestion-edificio/filtrar', methods=['GET'])
+def gestion_edificio_filtrar_redirect():
+    flash("Acceso no permitido", "danger")
+    return redirect(url_for('main.login'))
+
+@rol_requerido('admin')
 @bp.route('/gestion-edificio/filtrar', methods=['POST'])
 def gestion_edificio_filtrar():
-    if session.get('rol') != 'admin':
-        return redirect(url_for('main.login'))
 
     planta = request.form.get('planta', '').strip()
     zona = request.form.get('zona', '').strip()
     modulo = request.form.get('modulo', '').strip()
+    buscar = request.form.get('buscar') == '1'
 
-    query = {}
-    if planta:
-        query["planta"] = planta
-    if zona:
-        query["zona"] = zona
-    if modulo:
-        query["modulo"] = modulo
+    # Calcular todas las zonas y módulos filtradas según planta y zona seleccionadas
+    todas = list(mongo.db.beds.find({}, {"_id": 0}))
+    zonas = sorted(set(b['zona'] for b in todas if not planta or b['planta'] == planta))
+    modulos = sorted(set(b['modulo'] for b in todas if (not planta or b['planta'] == planta) and (not zona or b['zona'] == zona)))
+    plantas = sorted(set(b['planta'] for b in todas))
 
-    camas = list(mongo.db.beds.find(query, {"_id": 0}))
-    plantas = sorted(mongo.db.beds.distinct("planta"))
-    zonas = sorted(mongo.db.beds.distinct("zona"))
-    modulos = sorted(mongo.db.beds.distinct("modulo"))
+    camas = []
+    if buscar:
+        query = {}
+        if planta:
+            query["planta"] = planta
+        if zona:
+            query["zona"] = zona
+        if modulo:
+            query["modulo"] = modulo
+        camas = list(mongo.db.beds.find(query, {"_id": 0}))
 
-    return render_template("gestion_edificio.html", camas=camas, plantas=plantas, zonas=zonas, modulos=modulos)
-
+    return render_template("gestion_edificio.html",
+        camas=camas,
+        plantas=plantas,
+        zonas=zonas,
+        modulos=modulos,
+        planta=planta,
+        zona=zona,
+        modulo=modulo
+    )
 #bp para eliminar camas individualmente
+@bp.route('/eliminar-cama', methods=['GET'])
+def eliminar_cama_redirect():
+    flash("Acceso no permitido", "danger")
+    return redirect(url_for('main.login'))
+
+@rol_requerido('admin')
 @bp.route('/eliminar-cama', methods=['POST'])
 def eliminar_cama():
-    if session.get('rol') != 'admin':
-        return redirect(url_for('main.login'))
 
     bed_id = request.form.get('bed_id')
     planta = request.form.get('planta', '').strip()
@@ -487,11 +599,11 @@ def eliminar_cama():
     modulos = sorted(mongo.db.beds.distinct("modulo"))
 
     return render_template("gestion_edificio.html", camas=camas, plantas=plantas, zonas=zonas, modulos=modulos)
+
 #Este bp sirve para desocupar todas las camas de una brigada
 @bp.route('/eliminar-brigada', methods=['GET', 'POST'])
+@rol_requerido('admin', 'usuario')
 def eliminar_brigada():
-    if session.get('rol') not in ['admin', 'usuario']:
-        return redirect(url_for('main.login'))
 
     if request.method == 'POST':
         brigada = request.form.get('brigada')
@@ -514,3 +626,34 @@ def eliminar_brigada():
 
     brigadas = sorted(mongo.db.beds.distinct("brigada"))
     return render_template("eliminar_brigada.html", brigadas=brigadas)
+
+#este bp es el que muestra las estadísticas de ocupación
+@bp.route('/panel')
+@login_requerido
+def panel():
+
+    camas = list(mongo.db.beds.find({}, {'_id': 0}))
+    plantas = sorted(set(b['planta'] for b in camas))
+
+    resumen_por_planta = {}
+    camas_por_planta = {}
+
+    for planta in plantas:
+        camas_planta = [b for b in camas if b['planta'] == planta]
+        total = len(camas_planta)
+        ocupadas = sum(1 for b in camas_planta if b.get('estado') == 'Ocupada')
+        desocupadas = total - ocupadas
+
+        resumen_por_planta[planta] = {
+            'ocupadas': ocupadas,
+            'desocupadas': desocupadas,
+            'porcentaje_ocupadas': round((ocupadas / total) * 100, 1) if total else 0,
+            'porcentaje_desocupadas': round((desocupadas / total) * 100, 1) if total else 0
+        }
+        camas_por_planta[planta] = camas_planta
+
+    return render_template('index.html',
+        plantas=plantas,
+        resumen_por_planta=resumen_por_planta,
+        camas_por_planta=camas_por_planta
+    )

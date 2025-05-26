@@ -5,6 +5,16 @@
   <main>
     <section class="controls">
       <h2>Consultar Disponibilidad</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
       <div class="select-row">
         <form method="get" action="{{ url_for('main.consulta') }}">
           <div class="select-group">
@@ -89,8 +99,17 @@
                 <br>Brigada: {{ cama.brigada }} - Especialidad: {{ cama.especialidad }}
                 <form method="post" action="{{ url_for('main.desocupar_cama') }}" style="display:inline;">
                   <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
+                  <input type="hidden" name="planta" value="{{ request.args.get('planta', '') }}">
+                  <input type="hidden" name="zona" value="{{ request.args.get('zona', '') }}">
+                  <input type="hidden" name="modulo" value="{{ request.args.get('modulo', '') }}">
+                  <input type="hidden" name="habitacion" value="{{ request.args.get('habitacion', '') }}">
+                  <input type="hidden" name="genero" value="{{ request.args.get('genero', '') }}">
+                  <input type="hidden" name="numero_alumno" value="{{ request.args.get('numero_alumno', '') }}">
+                  <input type="hidden" name="brigada" value="{{ request.args.get('brigada', '') }}">
+                  <input type="hidden" name="consultar" value="1">
                   <button type="submit" class="btn btn-warning btn-sm">Desocupar</button>
                 </form>
+
               {% endif %}
             </li>
           {% endfor %}

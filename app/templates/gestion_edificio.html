@@ -21,37 +21,39 @@
   <h2 style="text-align:center;">Eliminar camas individualmente</h2>
 
   <form method="post" action="{{ url_for('main.gestion_edificio_filtrar') }}">
+    <input type="hidden" name="accion" value="filtrar">
     <div class="form-group">
-      <label for="planta">Planta:</label>
+      <label for="planta">Planta</label>
       <select name="planta" class="form-control">
         <option value="">Todas</option>
         {% for p in plantas %}
-        <option value="{{ p }}">{{ p }}</option>
+          <option value="{{ p }}" {% if p == planta %}selected{% endif %}>{{ p }}</option>
         {% endfor %}
       </select>
     </div>
 
     <div class="form-group">
-      <label for="zona">Zona:</label>
+      <label for="zona">Zona</label>
       <select name="zona" class="form-control">
         <option value="">Todas</option>
         {% for z in zonas %}
-        <option value="{{ z }}">{{ z }}</option>
+          <option value="{{ z }}" {% if z == zona %}selected{% endif %}>{{ z }}</option>
         {% endfor %}
       </select>
     </div>
 
     <div class="form-group">
-      <label for="modulo">Módulo:</label>
+      <label for="modulo">Módulo</label>
       <select name="modulo" class="form-control">
         <option value="">Todos</option>
         {% for m in modulos %}
-        <option value="{{ m }}">{{ m }}</option>
+          <option value="{{ m }}" {% if m == modulo %}selected{% endif %}>{{ m }}</option>
         {% endfor %}
       </select>
     </div>
 
-    <button type="submit" class="btn btn-warning" style="margin-top:1em;">Buscar camas</button>
+    <button type="submit" class="btn btn-warning mt-3">Buscar camas</button>
+    <input type="hidden" name="buscar" value="1">
   </form>
 </div>
 

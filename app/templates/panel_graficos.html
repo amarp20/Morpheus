@@ -1,0 +1,62 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Panel de Camas por Planta</h2>
+
+  <!-- Porcentajes por planta sin barras de progreso -->
+  <div class="row mb-4">
+    {% for planta in plantas %}
+    <div class="col-md-4 mb-3 text-center">
+      <div class="card shadow">
+        <div class="card-header bg-blue-800 text-white">
+          Planta {{ planta }}
+        </div>
+        <div class="card-body">
+          {% set resumen = resumen_por_planta.get(planta, {}) %}
+          {% set pct_oc = (resumen.get('porcentaje_ocupadas') or 0) | float %}
+          {% set pct_des = (resumen.get('porcentaje_desocupadas') or 0) | float %}
+          <p>
+            <span class="text-danger">Ocupadas: {{ pct_oc | round(1) }}%</span><br>
+            <span class="text-success">Desocupadas: {{ pct_des | round(1) }}%</span>
+          </p>
+          <span class="badge bg-danger me-2">Ocupadas: {{ resumen.get('ocupadas', 0) }}</span>
+          <span class="badge bg-success">Desocupadas: {{ resumen.get('desocupadas', 0) }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Listado de camas por planta -->
+  <div class="row mb-4">
+    {% for planta in plantas %}
+    <div class="col-md-4 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-blue-800 text-white">
+          Planta {{ planta }}
+        </div>
+        <div class="card-body" style="max-height: 350px; overflow-y: auto;">
+          {% set camas = camas_por_planta.get(planta, []) %}
+          {% if camas %}
+            {% for cama in camas %}
+              <div class="mb-2 p-2 border rounded {% if cama.estado == 'Ocupada' %}bg-danger-subtle{% else %}bg-success-subtle{% endif %}">
+                <strong>Zona:</strong> {{ cama.zona }},
+                <strong>Módulo:</strong> {{ cama.modulo }},
+                <strong>Habitación:</strong> {{ cama.habitacion }},
+                <strong>Cama:</strong> {{ cama.numero }},
+                <strong>Estado:</strong>
+                <span class="fw-bold {% if cama.estado == 'Ocupada' %}text-danger{% else %}text-success{% endif %}">
+                  {{ cama.estado }}
+                </span>
+                {% if cama.nombre_alumno %}
+                  <br><strong>Alumno:</strong> {{ cama.nombre_alumno }}
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="text-muted">No hay camas registradas en esta planta.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
