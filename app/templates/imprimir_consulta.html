@@ -48,7 +48,7 @@
             <label for="habitacion">Habitación</label>
             <select id="habitacion" name="habitacion" onchange="this.form.submit()" {% if not habitaciones %}disabled{% endif %}>
               <option value="">Habitación</option>
-              {% for h in habitaciones_lista %}
+              {% for h in habitaciones %}
                 <option value="{{ h }}" {% if habitacion == h %}selected{% endif %}>{{ h }}</option>
               {% endfor %}
             </select>
@@ -86,18 +86,11 @@
       {% if camas %}
         <button type="button" onclick="window.print()" class="btn btn-primary print-allowed" style="margin: 1em 0;">Imprimir</button>
         <div class="text-end mt-3 mb-3">
-          <a class="btn btn-success"
-            href="{{ url_for('main.vista_impresion',
-                              planta=planta,
-                              zona=zona,
-                              modulo=modulo,
-                              habitacion=habitacion,
-                              genero=genero,
-                              numero_alumno=numero_alumno,
-                              brigada=brigada) }}"
+            <a class="btn btn-success"
+            href="{{ url_for('main.imprimir_consulta', **request.args) }}"
             target="_blank">
             Imprimir tarjeta
-          </a>
+            </a>
         </div>
         <ul id="bed-list">
           {% for cama in camas %}

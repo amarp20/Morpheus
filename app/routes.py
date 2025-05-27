@@ -367,6 +367,7 @@ def login():
         if usuario and check_password_hash(usuario['contraseña'], contraseña):
             session['usuario'] = usuario['nombre']
             session['rol'] = usuario['rol']
+            session.permanent = False
             return redirect(url_for('main.panel'))
         else:
             flash('Credenciales incorrectas', 'danger')
@@ -657,3 +658,82 @@ def panel():
         resumen_por_planta=resumen_por_planta,
         camas_por_planta=camas_por_planta
     )
+#Este bp realiza la plantilla para imprimir la tarjeta de una habitación
+@bp.route('/imprimir-consulta')
+@login_requerido
+def imprimir_consulta():
+    beds = get_all_beds()
+    planta = request.args.get('planta', '')
+    zona = request.args.get('zona', '')
+    modulo = request.args.get('modulo', '')
+    habitacion = request.args.get('habitacion', '')
+    genero = request.args.get('genero', '')
+    numero_alumno = request.args.get('numero_alumno', '')
+    brigada = request.args.get('brigada', '')
+
+    plantas = sorted(set(b['planta'] for b in beds))
+    zonas = sorted(set(b['zona'] for b in beds if not planta or b['planta'] == planta))
+    modulos = sorted(set(b['modulo'] for b in beds if (not planta or b['planta'] == planta) and (not zona or b['zona'] == zona)))
+    habitaciones_lista = sorted(set(b['habitacion'] for b in beds if (not planta or b['planta'] == planta) and (not zona or b['zona'] == zona) and (not modulo or b['modulo'] == modulo)))
+    generos = sorted(set(b.get('genero', '') for b in beds if b.get('genero', '')))
+    numeros_alumno = sorted(set(b.get('numero_alumno', '') for b in beds if b.get('numero_alumno', '')))
+    brigadas = sorted(set(b.get('brigada', '') for b in beds if b.get('brigada')))
+
+    query = {}
+    if planta: query["planta"] = planta
+    if zona: query["zona"] = zona
+    if modulo: query["modulo"] = modulo
+    if habitacion: query["habitacion"] = habitacion
+    if genero: query["genero"] = genero
+    if numero_alumno: query["numero_alumno"] = numero_alumno
+    if brigada: query["brigada"] = brigada
+
+    query["estado"] = "Ocupada"
+
+    camas = list(mongo.db.beds.find(query, {"_id": 0}))
+    habitaciones = {}
+
+    for cama in camas:
+        clave = f"{cama['planta']}-{cama['zona']}-{cama['modulo']}-{cama['habitacion']}"
+        habitaciones.setdefault(clave, []).append(cama)
+
+    return render_template(
+        "imprimir_consulta.html",
+        habitaciones=habitaciones,
+        plantas=plantas,
+        zonas=zonas,
+        modulos=modulos,
+        habitaciones_lista=habitaciones_lista,
+        generos=generos,
+        numeros_alumno=numeros_alumno,
+        brigadas=brigadas,
+        planta=planta,
+        zona=zona,
+        modulo=modulo,
+        habitacion=habitacion,
+        genero=genero,
+        numero_alumno=numero_alumno,
+        brigada=brigada,
+        camas=camas
+    )
+
+@bp.route('/vista-impresion')
+@login_requerido
+def vista_impresion():
+    query = {}
+    for campo in ["planta", "zona", "modulo", "habitacion", "genero", "numero_alumno", "brigada"]:
+        valor = request.args.get(campo)
+        if valor:
+            query[campo] = valor
+
+    query["estado"] = "Ocupada"
+
+    camas = list(mongo.db.beds.find(query, {"_id": 0}))
+    habitaciones = {}
+
+    for cama in camas:
+        clave = f"{cama['planta']}-{cama['zona']}-{cama['modulo']}-{cama['habitacion']}"
+        habitaciones.setdefault(clave, []).append(cama)
+
+    return render_template("vista_impresion.html", habitaciones=habitaciones)
+

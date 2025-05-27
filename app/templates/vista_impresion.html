@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tarjetas por habitación</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 1cm;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+    td, th {
+      border: 1px solid #000;
+      padding: 0.5em;
+      text-align: center;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .habitacion {
+      page-break-inside: avoid;
+      margin-bottom: 2em;
+    }
+    .encabezado {
+      margin-bottom: 1em;
+    }
+    .no-print {
+      display: block;
+      text-align: right;
+      margin-bottom: 1em;
+    }
+    @media print {
+      .no-print {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="no-print">
+  <button onclick="window.print()" class="btn btn-primary">Imprimir</button>
+</div>
+
+{% for hab, camas in habitaciones.items() %}
+  <div class="habitacion">
+
+    <!-- Encabezado con escudo y bed_id -->
+    <table>
+      <tr>
+        <td style="width: 20%; border: 1px solid #000; padding: 0.5em;">
+          <img src="{{ url_for('static', filename='img/escudo2.png') }}" alt="Escudo" style="height: 60px;">
+        </td>
+        <td style="border: 1px solid #000; font-weight: bold; font-size: 1.2em; text-align: left; padding: 0.5em;">
+          Habitación {{ hab }}
+        </td>
+      </tr>
+    </table>
+
+    <!-- Tabla de datos de camas -->
+    <table>
+      <thead>
+        <tr>
+          <th>Nº Alumno</th>
+          <th>Especialidad</th>
+          <th>Apellido 1</th>
+          <th>Apellido 2</th>
+          <th>Nombre</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cama in camas %}
+        <tr>
+          <td>{{ cama.numero_alumno }}</td>
+          <td>{{ cama.especialidad }}</td>
+          <td>{{ cama.apellido1 }}</td>
+          <td>{{ cama.apellido2 }}</td>
+          <td>{{ cama.nombre_alumno }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+{% endfor %}
+
+</body>
+</html>
