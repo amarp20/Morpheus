@@ -111,19 +111,20 @@
                 <br>Alumno: {{ cama.nombre_alumno }} {{ cama.apellido1 }} {{ cama.apellido2 }}
                 <br>Nº Alumno: {{ cama.numero_alumno }}
                 <br>Brigada: {{ cama.brigada }} - Especialidad: {{ cama.especialidad }}
-                <form method="post" action="{{ url_for('main.desocupar_cama') }}" style="display:inline;">
-                  <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
-                  <input type="hidden" name="planta" value="{{ request.args.get('planta', '') }}">
-                  <input type="hidden" name="zona" value="{{ request.args.get('zona', '') }}">
-                  <input type="hidden" name="modulo" value="{{ request.args.get('modulo', '') }}">
-                  <input type="hidden" name="habitacion" value="{{ request.args.get('habitacion', '') }}">
-                  <input type="hidden" name="genero" value="{{ request.args.get('genero', '') }}">
-                  <input type="hidden" name="numero_alumno" value="{{ request.args.get('numero_alumno', '') }}">
-                  <input type="hidden" name="brigada" value="{{ request.args.get('brigada', '') }}">
-                  <input type="hidden" name="consultar" value="1">
-                  <button type="submit" class="btn btn-warning btn-sm">Desocupar</button>
-                </form>
-
+                {% if session['rol'] != 'mando' %}
+                  <form method="post" action="{{ url_for('main.desocupar_cama') }}" style="display:inline;">
+                    <input type="hidden" name="bed_id" value="{{ cama.bed_id }}">
+                    <input type="hidden" name="planta" value="{{ request.args.get('planta', '') }}">
+                    <input type="hidden" name="zona" value="{{ request.args.get('zona', '') }}">
+                    <input type="hidden" name="modulo" value="{{ request.args.get('modulo', '') }}">
+                    <input type="hidden" name="habitacion" value="{{ request.args.get('habitacion', '') }}">
+                    <input type="hidden" name="genero" value="{{ request.args.get('genero', '') }}">
+                    <input type="hidden" name="numero_alumno" value="{{ request.args.get('numero_alumno', '') }}">
+                    <input type="hidden" name="brigada" value="{{ request.args.get('brigada', '') }}">
+                    <input type="hidden" name="consultar" value="1">
+                    <button type="submit" class="btn btn-warning btn-sm">Desocupar</button>
+                  </form>
+                {% endif %}
               {% endif %}
             </li>
           {% endfor %}
