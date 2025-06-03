@@ -37,7 +37,7 @@
           </div>
           <div class="select-group">
             <label for="modulo">Módulo</label>
-            <select id="modulo" name="modulo" onchange="this.form.submit()" {% if not modulos %}disabled{% endif %}>
+            <select id="modulo" name="modulo" onchange="this.form.submit()">
               <option value="">Módulo</option>
               {% for m in modulos %}
                 <option value="{{ m }}" {% if modulo == m %}selected{% endif %}>{{ m }}</option>
@@ -46,9 +46,9 @@
           </div>
           <div class="select-group">
             <label for="habitacion">Habitación</label>
-            <select id="habitacion" name="habitacion" onchange="this.form.submit()" {% if not habitaciones %}disabled{% endif %}>
+            <select id="habitacion" name="habitacion" onchange="this.form.submit()">
               <option value="">Habitación</option>
-              {% for h in habitaciones_lista %}
+              {% for h in habitaciones %}
                 <option value="{{ h }}" {% if habitacion == h %}selected{% endif %}>{{ h }}</option>
               {% endfor %}
             </select>

@@ -88,8 +88,6 @@
       </div>
     </div>
   </nav>
-
-  <!-- Contenido principal -->
   <main class="flex-grow-1 container my-4">
     {% if session.get('usuario') and session.get('rol') in ['admin', 'usuario', 'mando'] %}
       {% if resumen_por_planta is defined and camas_por_planta is defined %}
@@ -98,10 +96,53 @@
     {% endif %}
     {% block content %}{% endblock %}
   </main>
-
-  <!-- Footer -->
   <footer class="bg-blue-800 text-center py-2 mt-auto text-white" style="font-size: 0.95rem;">
     <span>© E2T-CIS TIC 2025</span>
   </footer>
+  {% block scripts %}
+<script>
+    // --- Logout automático al cerrar pestaña o ventana ---
+    let isLeavingApp = true;
+
+    document.querySelectorAll('a[href]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('/') && !href.startsWith('//')) {
+        link.addEventListener('click', () => {
+          isLeavingApp = false;
+        });
+      }
+    });
+
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', () => {
+        isLeavingApp = false;
+      });
+    });
+
+    document.querySelectorAll('select, input').forEach(el => {
+      el.addEventListener('change', function () {
+        if (this.form) {
+          isLeavingApp = false;
+        }
+      });
+    });
+
+    window.addEventListener('beforeunload', function () {
+      if (isLeavingApp) {
+        navigator.sendBeacon('/logout_auto');
+      }
+
+      localStorage.setItem('scrollY', window.scrollY);
+    });
+
+    window.addEventListener('load', function () {
+      const scrollY = localStorage.getItem('scrollY');
+      if (scrollY !== null) {
+        window.scrollTo(0, parseInt(scrollY));
+        localStorage.removeItem('scrollY');
+      }
+    });
+  </script>
+  {% endblock %}
   </body>
 </html>

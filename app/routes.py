@@ -70,13 +70,13 @@ def get_all_beds():
 @login_requerido
 def consulta():
     beds = get_all_beds()
-    planta = request.args.get('planta', '')
-    zona = request.args.get('zona', '')
-    modulo = request.args.get('modulo', '')
-    habitacion = request.args.get('habitacion', '')
-    genero = request.args.get('genero', '')
-    numero_alumno = request.args.get('numero_alumno', '')
-    brigada = request.args.get('brigada', '')
+    planta = request.args.get('planta', '').strip()
+    zona = request.args.get('zona', '').strip()
+    modulo = request.args.get('modulo', '').strip()
+    habitacion = request.args.get('habitacion', '').strip()
+    genero = request.args.get('genero', '').strip()
+    numero_alumno = request.args.get('numero_alumno', '').strip()
+    brigada = request.args.get('brigada', '').strip()
     consultar = 'consultar' in request.args
 
     plantas = sorted(set(b['planta'] for b in beds))
@@ -378,6 +378,12 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('main.login'))
+
+#Este bp cierra sesión automáticamente al cerrar la ventana o pestaña
+@bp.route('/logout_auto', methods=['POST'])
+def logout_auto():
+    session.clear()
+    return '', 204  # Sin contenido
 
 #Este bp añade, elimina, consulta y cambia claves desde el panel admin
 @bp.route('/gestion-usuarios', methods=['GET', 'POST'])

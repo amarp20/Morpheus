@@ -46,8 +46,8 @@
                 <span class="fw-bold {% if cama.estado == 'Ocupada' %}text-danger{% else %}text-success{% endif %}">
                   {{ cama.estado }}
                 </span>
-                {% if cama.nombre_alumno %}
-                  <br><strong>Alumno:</strong> {{ cama.nombre_alumno }}
+                {% if cama.numero_alumno %}
+                  <br><strong>Alumno:</strong> {{ cama.numero_alumno }}
                 {% endif %}
               </div>
             {% endfor %}

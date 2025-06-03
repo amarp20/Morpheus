@@ -1,20 +1,6 @@
-import json
-from flask import Flask
-from flask_pymongo import PyMongo
 from pymongo import MongoClient
 
-app = Flask(__name__)
-app.config["MONGO_URI"] = 'mongodb://localhost:27017/Morpheus'  # Ajusta si es necesario
-mongo = PyMongo(app)
-
-with open("listado_camas.json", "r", encoding="utf-8") as file:
-    beds_data = json.load(file)
-
-# Inserta los documentos en la colección "beds"
-result = mongo.db.beds.insert_many(beds_data)
-print(f"Insertados {len(result.inserted_ids)} documentos en la colección 'beds'.")
-
-client = MongoClient("mongodb://localhost:27017/Morpheus")
+client = MongoClient("mongodb://e2t:Infanteria1537@192.168.7.42:27017/admin")
 db = client["Morpheus"]
 
 camas = db.beds.find()
@@ -49,12 +35,3 @@ for cama in camas:
             continue
 
 print(f"{actualizadas} camas actualizadas.")
-
-# Actualizar todas las camas cuyo numero_alumno sea la cadena "null"
-resultado = db.beds.update_many(
-    {"numero_alumno": "null"},
-    {"$set": {"numero_alumno": ""}}
-)
-
-# Mostrar cuántos documentos fueron modificados
-print(f"{resultado.modified_count} camas actualizadas.")
