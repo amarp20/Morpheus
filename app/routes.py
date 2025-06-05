@@ -383,7 +383,7 @@ def logout():
 @bp.route('/logout_auto', methods=['POST'])
 def logout_auto():
     session.clear()
-    return '', 204  # Sin contenido
+    return '', 204
 
 #Este bp añade, elimina, consulta y cambia claves desde el panel admin
 @bp.route('/gestion-usuarios', methods=['GET', 'POST'])
@@ -743,3 +743,30 @@ def vista_impresion():
 
     return render_template("vista_impresion.html", habitaciones=habitaciones)
 
+# Este bp accede a la visión de ocupación de las plantas desde los botones de la página panel_graficos.html
+@bp.route('/plano_planta1')
+@login_requerido
+def plano_planta1():
+    from app import mongo
+    beds = list(mongo.db.beds.find({}, {'_id': 0, 'planta': 1, 'zona': 1, 'modulo': 1, 'estado': 1}))
+    
+    resumen = {}
+    for b in beds:
+        key = f"{b['planta']}{b['zona'].lower()}{b['modulo']}"
+        if key not in resumen:
+            resumen[key] = {'modulo': b['modulo'], 'camas': 0, 'libres': 0}
+        resumen[key]['camas'] += 1
+        if b['estado'] == 'Desocupada':
+            resumen[key]['libres'] += 1
+
+    return render_template('plano_planta1.html', resumen=resumen)
+
+@bp.route('/plano_planta2')
+@login_requerido
+def plano_planta2():
+    return render_template('plano_planta2.html')
+
+@bp.route('/plano_planta3')
+@login_requerido
+def plano_planta3():
+    return render_template('plano_planta3.html')

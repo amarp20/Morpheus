@@ -1,0 +1,465 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="text-align: center; padding: 20px;">
+<div style="position: relative; display: inline-block; width: 100%; max-width: 1133px;">
+<img alt="Plano Planta 1" src="{{ url_for('static', filename='img/planta1.png') }}" width="100%"/>
+<div class="interactive-field" style="top:18.09%; left:4.94%; width:7.24%; height:12.55%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1b2' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:30.76%; left:4.94%; width:7.33%; height:13.51%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1b1' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:4.95%; left:14.47%; width:7.41%; height:12.91%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1b5' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:18.21%; left:14.47%; width:7.41%; height:12.79%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1b4' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:31.48%; left:14.47%; width:7.41%; height:12.79%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1b3' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:56.21%; left:4.85%; width:7.41%; height:12.55%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1a1' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:69.60%; left:4.94%; width:7.24%; height:12.55%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1a2' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:56.09%; left:14.47%; width:7.24%; height:12.79%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1a3' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:69.36%; left:14.56%; width:7.15%; height:12.79%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1a4' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:82.51%; left:14.56%; width:7.41%; height:12.67%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1a5' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:41.62%; left:29.66%; width:11.39%; height:7.60%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1c5' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:51.03%; left:30.10%; width:10.33%; height:7.24%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1c6' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:4.70%; left:61.34%; width:9.53%; height:6.03%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e9' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:11.70%; left:61.25%; width:9.71%; height:6.03%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e11' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:18.09%; left:61.25%; width:9.71%; height:5.79%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e12' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:24.13%; left:61.34%; width:9.62%; height:6.63%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e14' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:31.12%; left:61.25%; width:9.71%; height:6.15%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e15' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:37.52%; left:61.25%; width:7.41%; height:6.63%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e17' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:11.22%; left:47.31%; width:11.74%; height:6.63%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e7' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:18.21%; left:47.31%; width:11.92%; height:5.91%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e6' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:24.49%; left:47.48%; width:11.65%; height:6.27%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e4' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:31.12%; left:47.48%; width:11.65%; height:6.15%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e3' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:37.88%; left:47.48%; width:11.65%; height:6.39%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1e1' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:56.21%; left:47.75%; width:11.30%; height:6.27%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d17' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:62.85%; left:47.75%; width:11.30%; height:6.15%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d15' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:69.36%; left:47.75%; width:11.30%; height:6.27%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d14' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:76.12%; left:47.75%; width:11.30%; height:6.03%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d12' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:82.51%; left:47.57%; width:11.56%; height:6.88%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d11' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:56.21%; left:61.25%; width:7.41%; height:6.15%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d1' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:62.85%; left:61.25%; width:11.56%; height:6.15%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d3' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:69.60%; left:61.34%; width:11.47%; height:6.27%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d4' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:76.24%; left:61.25%; width:11.56%; height:6.15%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d6' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:82.75%; left:61.25%; width:11.56%; height:6.27%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d7' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:89.38%; left:61.25%; width:11.56%; height:6.51%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1d9' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:38.84%; left:68.84%; width:5.12%; height:10.25%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1f1' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:38.84%; left:74.32%; width:4.77%; height:10.25%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1f2' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:38.84%; left:79.35%; width:4.68%; height:10.13%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1f3' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:38.84%; left:84.29%; width:5.03%; height:10.25%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1f4' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:51.15%; left:84.11%; width:5.12%; height:10.62%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1f7' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:51.15%; left:78.99%; width:4.77%; height:10.74%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1f8' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:51.27%; left:74.14%; width:4.59%; height:10.74%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1f9' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="top:51.15%; left:68.93%; width:4.85%; height:10.86%; background-color:#99ccff; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:4px;">
+{% set id = '1f10' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+Camas: {{ datos.camas }}
+Libres: {{ datos.libres }}
+{% else %}
+<span style="color:red;">Sin datos</span>
+{% endif %}
+</div><div class="interactive-field" style="position:absolute; top:2.17%; left:26.65%; width:21.80%; height:5.43%;">
+<input id="zona1b" type="text"/>
+</div><div class="interactive-field" style="position:absolute; top:89.87%; left:23.21%; width:12.53%; height:4.95%;">
+<input id="zona1a" type="text"/>
+</div><div class="interactive-field" style="position:absolute; top:34.74%; left:28.68%; width:12.80%; height:4.10%;">
+<input id="zona1c" type="text"/>
+</div>
+<div class="interactive-field" style="position:absolute; top:12.55%; left:72.29%; width:14.92%; height:4.46%;">
+<input id="zona1e" type="text"/>
+</div>
+<div class="interactive-field" style="position:absolute; top:32.81%; left:82.88%; width:13.33%; height:3.98%;">
+<input id="zona1f" type="text"/>
+</div>
+<div class="interactive-field" style="position:absolute; top:90.59%; left:75.11%; width:15.18%; height:5.07%;">
+<input id="zona1d" type="text"/>
+</div>
+<div class="interactive-field" style="position:absolute; top:13.63%; left:22.86%; width:12.44%; height:4.46%;">
+<input id="planta1" type="text"/>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+  .interactive-field {
+    position: absolute;
+    border: 1px dashed #007bff;
+    box-sizing: border-box;
+  }
+  .interactive-field input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: rgba(0, 123, 255, 0.1);
+    text-align: center;
+  }
+</style>
+{% endblock %}
