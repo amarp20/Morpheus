@@ -1,0 +1,821 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="text-align: center; padding: 20px;">
+ <div style="position: relative; display: inline-block; width: 100%; max-width: 1133px;">
+  <img alt="Plano Planta 2" src="{{ url_for('static', filename='img/planta1.png') }}" width="100%"/>
+  <!-- Aquí van los divs -->
+  {% set id = '2a1' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2a1" style="position:absolute; top:56.09%; left:4.94%; width:7.33%; height:12.67%;
+            background-color:#ffcc99; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2a2' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2a2" style="position:absolute; top:69.36%; left:4.85%; width:7.41%; height:13.27%;
+            background-color:#ffcc99; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2a3' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2a3" style="position:absolute; top:56.09%; left:14.47%; width:7.24%; height:12.67%;
+            background-color:#ffcc99; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2a4' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2a4" style="position:absolute; top:69.24%; left:14.56%; width:7.15%; height:12.91%;
+            background-color:#ffcc99; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2a5' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2a5" style="position:absolute; top:82.39%; left:14.56%; width:7.06%; height:12.79%;
+            background-color:#ffcc99; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2b1' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2b1" style="position:absolute; top:30.88%; left:4.85%; width:7.41%; height:13.27%;
+            background-color:#99ccff; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2b2' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2b2" style="position:absolute; top:17.73%; left:4.85%; width:7.41%; height:12.55%;
+            background-color:#99ccff; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2b3' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2b3" style="position:absolute; top:30.88%; left:14.47%; width:7.24%; height:13.39%;
+            background-color:#99ccff; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2b4' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2b4" style="position:absolute; top:17.97%; left:14.56%; width:7.15%; height:12.67%;
+            background-color:#99ccff; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2b5' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2b5" style="position:absolute; top:4.95%; left:14.39%; width:7.24%; height:12.67%;
+            background-color:#99ccff; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:1.0; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2c10' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2c10" style="position:absolute; top:51.03%; left:24.18%; width:5.12%; height:14.11%;
+            background-color:#da8484; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2c2' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2c2" style="position:absolute; top:36.55%; left:24.18%; width:5.38%; height:12.42%;
+            background-color:#da8484; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2c3' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2c3" style="position:absolute; top:36.55%; left:29.83%; width:5.38%; height:12.55%;
+            background-color:#da8484; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2c5' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2c5" style="position:absolute; top:36.67%; left:35.75%; width:5.12%; height:12.42%;
+            background-color:#da8484; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2c6' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2c6" style="position:absolute; top:51.15%; left:40.42%; width:5.56%; height:13.75%;
+            background-color:#da8484; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2c7' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2c7" style="position:absolute; top:51.39%; left:34.77%; width:5.21%; height:13.75%;
+            background-color:#da8484; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2c9' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2c9" style="position:absolute; top:51.39%; left:29.66%; width:4.85%; height:13.75%;
+            background-color:#da8484; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d11' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d11" style="position:absolute; top:82.51%; left:48.01%; width:11.12%; height:6.27%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d12' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d12" style="position:absolute; top:75.63%; left:48.10%; width:11.03%; height:6.39%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d14' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d14" style="position:absolute; top:69.24%; left:48.10%; width:10.94%; height:6.03%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d15' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d15" style="position:absolute; top:62.61%; left:48.10%; width:10.94%; height:6.27%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d17' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d17" style="position:absolute; top:56.21%; left:48.10%; width:10.94%; height:6.03%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d3' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d3" style="position:absolute; top:62.85%; left:61.34%; width:10.50%; height:6.51%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d4' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d4" style="position:absolute; top:69.60%; left:61.34%; width:10.59%; height:6.03%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d6' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d6" style="position:absolute; top:76.00%; left:61.34%; width:10.50%; height:6.15%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d7' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d7" style="position:absolute; top:82.39%; left:61.34%; width:10.50%; height:6.15%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2d9' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2d9" style="position:absolute; top:88.90%; left:61.34%; width:10.50%; height:6.63%;
+            background-color:#f3072b; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e1' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e1" style="position:absolute; top:37.76%; left:48.63%; width:10.50%; height:6.39%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e11' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e11" style="position:absolute; top:11.82%; left:61.34%; width:10.50%; height:6.03%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e12' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e12" style="position:absolute; top:18.34%; left:61.34%; width:10.50%; height:5.91%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e14' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e14" style="position:absolute; top:24.61%; left:61.34%; width:10.50%; height:6.39%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e15' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e15" style="position:absolute; top:31.36%; left:61.34%; width:10.41%; height:5.79%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e17' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e17" style="position:absolute; top:37.52%; left:61.34%; width:10.41%; height:6.76%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e3' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e3" style="position:absolute; top:31.12%; left:48.63%; width:10.50%; height:6.39%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e4' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e4" style="position:absolute; top:24.61%; left:48.63%; width:10.41%; height:6.27%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e6' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e6" style="position:absolute; top:18.21%; left:48.63%; width:10.59%; height:6.15%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e7' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e7" style="position:absolute; top:11.22%; left:48.63%; width:10.41%; height:6.63%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = '2e9' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="2e9" style="position:absolute; top:4.58%; left:61.25%; width:10.59%; height:6.88%;
+            background-color:#43d84a; color:black; font-size:9px; font-weight:bold;
+            text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line;
+            padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.5; padding-top:0;">
+    {% if datos %}
+    Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+    {% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  {% set id = 'planta2' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="planta2" style="position:absolute; top:2.41%; left:25.51%; width:18.27%; height:6.76%; background-color:#3336ff; display: flex; justify-content: center; align-items: center; text-align: center; font-weight: bold; font-size: 25px; text-transform: uppercase; border: 1px solid black; color: #fcfafa;">
+   <div style="position:absolute; left:4px; right:4px;">
+    PLANTA 2
+   </div>
+  </div>
+  {% set id = 'zona2a' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="zona2a" style="position:absolute; top:89.26%; left:23.21%; width:14.74%; height:4.70%; background-color:#ffcc99; display: flex; justify-content: center; align-items: center; text-align: center; font-weight: bold; font-size: 20px; text-transform: uppercase; border: 1px solid black; color: black;">
+   <div style="position:absolute; left:4px; right:4px;">
+    ZONA 2A
+   </div>
+  </div>
+  {% set id = 'zona2b' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="zona2b" style="position:absolute; top:15.20%; left:22.77%; width:14.12%; height:5.55%; background-color:#99ccff; display: flex; justify-content: center; align-items: center; text-align: center; font-weight: bold; font-size: 20px; text-transform: uppercase; border: 1px solid black; color: black;">
+   <div style="position:absolute; left:4px; right:4px;">
+    ZONA 2B
+   </div>
+  </div>
+  {% set id = 'zona2c' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="zona2c" style="position:absolute; top:29.31%; left:27.36%; width:14.39%; height:5.31%; background-color:#da8484; display: flex; justify-content: center; align-items: center; text-align: center; font-weight: bold; font-size: 20px; text-transform: uppercase; border: 1px solid black; color: black;">
+   <div style="position:absolute; left:4px; right:4px;">
+    ZONA 2C
+   </div>
+  </div>
+  {% set id = 'zona2d' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="zona2d" style="position:absolute; top:89.38%; left:73.79%; width:15.45%; height:4.83%; background-color:#f3072b; display: flex; justify-content: center; align-items: center; text-align: center; font-weight: bold; font-size: 20px; text-transform: uppercase; border: 1px solid black; color: black;">
+   <div style="position:absolute; left:4px; right:4px;">
+    ZONA 2D
+   </div>
+  </div>
+  {% set id = 'zona2e' %}
+{% set datos = resumen.get(id) %}
+  <div class="interactive-field" id="zona2e" style="position:absolute; top:14.23%; left:73.26%; width:15.71%; height:5.55%; background-color:#43d84a; display: flex; justify-content: center; align-items: center; text-align: center; font-weight: bold; font-size: 20px; text-transform: uppercase; border: 1px solid black; color: black;">
+   <div style="position:absolute; left:4px; right:4px;">
+    ZONA 2E
+   </div>
+  </div>
+ </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+ .interactive-field {
+    position: absolute;
+    box-sizing: border-box;
+  }
+</style>
+{% endblock %}

@@ -764,7 +764,28 @@ def plano_planta1():
 @bp.route('/plano_planta2')
 @login_requerido
 def plano_planta2():
-    return render_template('plano_planta2.html')
+    # Permitir solo si el rol está permitido
+    if session.get('rol') not in ['admin', 'usuario', 'mando']:
+        flash("No tiene privilegios para acceder a esta sección", "danger")
+        return redirect(url_for('main.login'))
+
+    # Obtener todos los documentos de planta "2"
+    camas = mongo.db.beds.find({"planta": "2"})
+    resumen = {}
+
+    for cama in camas:
+        zona = cama.get("zona", "").lower()
+        modulo = cama.get("modulo", "").lower()
+        if not zona or not modulo:
+            continue
+        clave = f"2{zona}{modulo}"
+        if clave not in resumen:
+            resumen[clave] = {"modulo": modulo, "camas": 0, "libres": 0}
+        resumen[clave]["camas"] += 1
+        if cama.get("estado") == "Desocupada":
+            resumen[clave]["libres"] += 1
+
+    return render_template("plano_planta2.html", resumen=resumen)
 
 @bp.route('/plano_planta3')
 @login_requerido
