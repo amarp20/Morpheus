@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="text-align: center; padding: 20px;">
+ <div style="position: relative; display: inline-block; width: 100%; max-width: 1133px;">
+  <img alt="Plano Planta 3" src="{{ url_for('static', filename='img/planta1.png') }}" width="100%"/>
+  <div id="planta3" style="position:absolute; top:5.07%; left:26.92%; width:18.62%; height:5.79%; background-color:#007bff; display:flex; justify-content:center; align-items:center; text-align:center; font-weight:bold; font-size:25px; text-transform:uppercase; border:1px solid black; color:#fcfafa;">
+   <div style="position:absolute; left:4px; right:4px;">
+    PLANTA 3
+   </div>
+  </div>
+  <div id="zona3c" style="position:absolute; top:27.50%; left:27.10%; width:18.18%; height:4.83%; background-color:#da8484; display:flex; justify-content:center; align-items:center; text-align:center; font-weight:bold; font-size:25px; text-transform:uppercase; border:1px solid black; color:#fcfafa;">
+   <div style="position:absolute; left:4px; right:4px;">
+    ZONA 3C
+   </div>
+  </div>
+  <div class="interactive-field" id="3c2" style="position:absolute; top:51.03%; left:40.42%; width:8.21%; height:10.01%; background-color:#da8484; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% set id = '3c2' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+{% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  <div class="interactive-field" id="3c3" style="position:absolute; top:51.03%; left:31.42%; width:8.74%; height:10.01%; background-color:#da8484; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% set id = '3c3' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+{% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  <div class="interactive-field" id="3c4" style="position:absolute; top:51.15%; left:22.07%; width:9.09%; height:9.89%; background-color:#da8484; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% set id = '3c4' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+{% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  <div class="interactive-field" id="3c8" style="position:absolute; top:39.08%; left:26.04%; width:7.94%; height:10.13%; background-color:#da8484; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% set id = '3c8' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+{% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+  <div class="interactive-field" id="3c9" style="position:absolute; top:39.08%; left:34.33%; width:8.38%; height:10.01%; background-color:#da8484; color:black; font-size:9px; font-weight:bold; text-align:left; border:1px solid black; overflow:hidden; white-space:pre-line; padding:0;">
+   <div style="position:absolute; top:0; left:4px; right:4px; line-height:0.6; padding-top:0;">
+    {% set id = '3c9' %}
+{% set datos = resumen.get(id) %}
+{% if datos %}
+Mod: {{ datos.modulo }}
+    <br/>
+    Camas: {{ datos.camas }}
+    <br/>
+    Libres: {{ datos.libres }}
+{% else %}
+    <span style="color:red;">
+     Sin datos
+    </span>
+    {% endif %}
+   </div>
+  </div>
+ </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<style>
+ .interactive-field {
+    position: absolute;
+    box-sizing: border-box;
+  }
+</style>
+{% endblock %}

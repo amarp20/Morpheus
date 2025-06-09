@@ -148,8 +148,11 @@ def preview():
     file.save(path)
 
     df = pd.read_excel(path, engine="openpyxl", dtype=str)
-    records = df.to_dict(orient="records")
+    for col in ['planta', 'zona', 'modulo', 'habitacion', 'numero']:
+        if col in df.columns:
+            df[col] = df[col].astype(str)
 
+    records = df.to_dict(orient="records")
     return render_template("preview.html", camas=records, filename=file.filename)
 
 #Con este bp se aplican los cambios de subir excel
@@ -164,7 +167,10 @@ def apply_update():
     filename = request.form.get("filename")
     path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
     df = pd.read_excel(path, engine="openpyxl", dtype=str)
-
+    for col in ['planta', 'zona', 'modulo', 'habitacion', 'numero']:
+        if col in df.columns:
+            df[col] = df[col].astype(str)
+            
     updated = 0
     for _, row in df.iterrows():
         bed_id = row.get("bed_id")
@@ -232,7 +238,7 @@ def assign():
         assign_message=assign_message,
         asignaciones=asignaciones
     )
-#este bp realiza la carga de datos de la base de datos 
+#este bp realiza la carga de datos de la base de datos en asignar camas
 @bp.route('/assign-upload', methods=['GET', 'POST'])
 @rol_requerido('admin', 'usuario')
 def assign_upload():
@@ -488,7 +494,10 @@ def gestion_edificio_apply():
 
     path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
     try:
-        df = pd.read_excel(path, engine='openpyxl', dtype={"planta": str, "zona": str, "modulo": str, "habitacion": str, "numero": int})
+        df = pd.read_excel(path, engine='openpyxl', dtype=str)
+        for col in ['planta', 'zona', 'modulo', 'habitacion', 'numero']:
+            if col in df.columns:
+                df[col] = df[col].astype(str)
 
         total_agregadas = 0
 
@@ -790,4 +799,18 @@ def plano_planta2():
 @bp.route('/plano_planta3')
 @login_requerido
 def plano_planta3():
-    return render_template('plano_planta3.html')
+    if session.get('rol') not in ['admin', 'usuario', 'mando']:
+        flash("No tiene privilegios para acceder a esta sección", "danger")
+        return redirect(url_for('main.login'))
+
+    resumen = {}
+    camas = mongo.db.beds.find({"planta": "3"})
+    for cama in camas:
+        key = cama["bed_id"].split("-")[0].lower() + cama["bed_id"].split("-")[1].lower() + cama["modulo"]
+        if key not in resumen:
+            resumen[key] = {"modulo": cama["modulo"], "camas": 0, "libres": 0}
+        resumen[key]["camas"] += 1
+        if cama["estado"] == "Desocupada":
+            resumen[key]["libres"] += 1
+
+    return render_template('plano_planta3.html', resumen=resumen)

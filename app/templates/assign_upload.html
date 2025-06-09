@@ -4,6 +4,7 @@
 {% block content %}
 <div class="container">
   <h2>Subir alumnos desde Excel</h2>
+  <h6>*Máximo número de filas 150. Recomendable no más de 50.</h6>
   <form action="{{ url_for('main.assign_upload') }}" method="post" enctype="multipart/form-data">
     <input type="file" name="alumnos_excel" accept=".xlsx,.xls" required>
     <button type="submit">Previsualizar</button>
