@@ -84,21 +84,16 @@
         </form>
       </div>
       {% if camas %}
-        <button type="button" onclick="window.print()" class="btn btn-primary print-allowed" style="margin: 1em 0;">Imprimir</button>
-        <div class="text-end mt-3 mb-3">
-          <a class="btn btn-success"
-            href="{{ url_for('main.vista_impresion',
-                              planta=planta,
-                              zona=zona,
-                              modulo=modulo,
-                              habitacion=habitacion,
-                              genero=genero,
-                              numero_alumno=numero_alumno,
-                              brigada=brigada) }}"
-            target="_blank">
-            Imprimir tarjeta
+      <div class="text-end mt-3 mb-3 d-flex justify-content-between align-items-center">
+          <button type="button" onclick="window.print()" class="btn btn-primary print-allowed" style="margin: 1em 0;">Imprimir</button>
+          <div style="border: 2px solid black; width: 400px; padding: 10px; margin-top: 10px; text-align: center;">
+              <p style="color: green; font-weight: bold;">Camas Libres: {{ camas_libres }}</p>
+              <p style="color: red; font-weight: bold;">Camas Ocupadas: {{ camas_ocupadas }}</p>
+          </div>
+          <a class="btn btn-success" href="{{ url_for('main.vista_impresion', planta=planta, zona=zona, modulo=modulo, habitacion=habitacion, genero=genero, numero_alumno=numero_alumno, brigada=brigada) }}" target="_blank">
+              Imprimir tarjeta
           </a>
-        </div>
+      </div>
         <ul id="bed-list">
           {% for cama in camas %}
             <li>
@@ -106,8 +101,7 @@
               Cama {{ cama.numero }}, Estado {{ cama.estado }}
               {% if cama.brigada %}, Brigada: {{ cama.brigada }}{% endif %}
               {% if cama.genero %} - Género: {{ cama.genero }}{% endif %}
-
-              {% if cama.estado == "Ocupada" %}
+              {% if cama.estado == "OCUPADA" %}
                 <br>Alumno: {{ cama.nombre_alumno }} {{ cama.apellido1 }} {{ cama.apellido2 }}
                 <br>Nº Alumno: {{ cama.numero_alumno }}
                 <br>Brigada: {{ cama.brigada }} - Especialidad: {{ cama.especialidad }}

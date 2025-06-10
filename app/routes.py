@@ -87,6 +87,8 @@ def consulta():
     numeros_alumno = sorted(set(b.get('numero_alumno', '') for b in beds if b.get('numero_alumno', '')))
     brigadas = sorted(set(b.get('brigada', '') for b in beds if b.get('brigada')))
 
+    camas_libres = 0
+    camas_ocupadas = 0
 
     if consultar:
         camas = [
@@ -100,6 +102,11 @@ def consulta():
             and (not numero_alumno or b.get('numero_alumno', '') == numero_alumno)
             and (not brigada or b.get('brigada', '') == brigada)
         ]
+        
+        # Contamos camas libres y ocupadas
+        camas_libres = len([b for b in camas if b.get('estado', '').upper() == 'DESOCUPADA'])
+        camas_ocupadas = len([b for b in camas if b.get('estado', '').upper() == 'OCUPADA'])
+
     else:
         camas = []
 
@@ -120,8 +127,10 @@ def consulta():
         camas=camas,
         brigada=brigada,
         brigadas=brigadas,
-
+        camas_libres=camas_libres,
+        camas_ocupadas=camas_ocupadas
     )
+
 #Este es el upload de subir excel
 @bp.route('/upload')
 @rol_requerido('admin')
@@ -188,7 +197,14 @@ def apply_update():
             if pd.isna(valor) or valor is None:
                 new_vals[campo] = ""
             else:
-                new_vals[campo] = str(valor).strip()
+                if campo == "estado":
+                    estado_val = str(valor).strip().upper()
+                    if estado_val not in ("OCUPADA", "DESOCUPADA"):
+                        flash("El valor del estado de las camas debe ser Ocupada o Desocupada.", "danger")
+                        return redirect(url_for("main.upload_page"))
+                    new_vals[campo] = estado_val
+                else:
+                    new_vals[campo] = str(valor).strip()
 
         if bed_id:
             res = mongo.db.beds.update_one({"bed_id": bed_id}, {"$set": new_vals})
@@ -217,7 +233,7 @@ def assign():
                 mongo.db.beds.update_one(
                     {"bed_id": bed_id},
                     {"$set": {
-                        "estado": "Ocupada",
+                        "estado": "OCUPADA",
                         "nombre_alumno": nombre,
                         "numero_alumno": numero
                     }}
@@ -266,7 +282,7 @@ def assign_upload():
             if bed_id:
                 camas_asignadas.append(bed_id)
         # Excluye las camas ya seleccionadas
-        free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "Desocupada"}, {"_id": 0, "bed_id": 1}) if b['bed_id'] not in camas_asignadas]
+        free_beds = [b['bed_id'] for b in mongo.db.beds.find({"estado": "DESOCUPADA"}, {"_id": 0, "bed_id": 1}) if b['bed_id'] not in camas_asignadas]
         return render_template('assign_preview.html', students=students, free_beds=free_beds, camas_asignadas=camas_asignadas)
     return render_template('assign_upload.html')
 
@@ -299,7 +315,7 @@ def assign_confirm():
             res = mongo.db.beds.update_one(
                 {"bed_id": bed_id},
                 {"$set": {
-                    "estado": "Ocupada",
+                    "estado": "OCUPADA",
                     "nombre_alumno": nombre or "",
                     "numero_alumno": numero or "",
                     "apellido1": apellido1 or "",
@@ -340,7 +356,7 @@ def desocupar_cama():
         mongo.db.beds.update_one(
             {"bed_id": bed_id},
             {"$set": {
-                "estado": "Desocupada",
+                "estado": "DESOCUPADA",
                 "nombre_alumno": "",
                 "numero_alumno": "",
                 "apellido1": "",
@@ -517,7 +533,7 @@ def gestion_edificio_apply():
                     "modulo": modulo,
                     "habitacion": habitacion,
                     "numero": numero,
-                    "estado": "Desocupada",
+                    "estado": "DESOCUPADA",
                     "nombre_alumno": "",
                     "numero_alumno": "",
                     "apellido1": "",
@@ -634,7 +650,7 @@ def eliminar_brigada():
                     "genero": "",
                     "especialidad": "",
                     "brigada": "",
-                    "estado": "Desocupada"
+                    "estado": "DESOCUPADA"
                 }}
             )
             flash(f"{result.modified_count} camas actualizadas para brigada {brigada}.", "success")
@@ -657,7 +673,7 @@ def panel():
     for planta in plantas:
         camas_planta = [b for b in camas if b['planta'] == planta]
         total = len(camas_planta)
-        ocupadas = sum(1 for b in camas_planta if b.get('estado') == 'Ocupada')
+        ocupadas = sum(1 for b in camas_planta if b.get('estado') == 'OCUPADA')
         desocupadas = total - ocupadas
 
         resumen_por_planta[planta] = {
@@ -703,7 +719,7 @@ def imprimir_consulta():
     if numero_alumno: query["numero_alumno"] = numero_alumno
     if brigada: query["brigada"] = brigada
 
-    query["estado"] = "Ocupada"
+    query["estado"] = "OCUPADA"
 
     camas = list(mongo.db.beds.find(query, {"_id": 0}))
     habitaciones = {}
@@ -741,7 +757,7 @@ def vista_impresion():
         if valor:
             query[campo] = valor
 
-    query["estado"] = "Ocupada"
+    query["estado"] = "OCUPADA"
 
     camas = list(mongo.db.beds.find(query, {"_id": 0}))
     habitaciones = {}
@@ -765,7 +781,7 @@ def plano_planta1():
         if key not in resumen:
             resumen[key] = {'modulo': b['modulo'], 'camas': 0, 'libres': 0}
         resumen[key]['camas'] += 1
-        if b['estado'] == 'Desocupada':
+        if b['estado'] == 'DESOCUPADA':
             resumen[key]['libres'] += 1
 
     return render_template('plano_planta1.html', resumen=resumen)
@@ -791,7 +807,7 @@ def plano_planta2():
         if clave not in resumen:
             resumen[clave] = {"modulo": modulo, "camas": 0, "libres": 0}
         resumen[clave]["camas"] += 1
-        if cama.get("estado") == "Desocupada":
+        if cama.get("estado") == "DESOCUPADA":
             resumen[clave]["libres"] += 1
 
     return render_template("plano_planta2.html", resumen=resumen)
@@ -810,7 +826,27 @@ def plano_planta3():
         if key not in resumen:
             resumen[key] = {"modulo": cama["modulo"], "camas": 0, "libres": 0}
         resumen[key]["camas"] += 1
-        if cama["estado"] == "Desocupada":
+        if cama["estado"] == "DESOCUPADA":
             resumen[key]["libres"] += 1
 
     return render_template('plano_planta3.html', resumen=resumen)
+
+# Mostrar Logs en panel admin
+@bp.route('/logs')
+@rol_requerido('admin')
+def logs():
+    error_log_path = "/var/log/nginx/error.log"
+    access_log_path = "/var/log/nginx/access.log"
+
+    def leer_log(path):
+        try:
+            with open(path, 'rb') as log_file:
+                lines = log_file.readlines()[-10:]
+                return [line.decode('utf-8', errors='replace') for line in lines]
+        except Exception as e:
+            return [f"Error al leer {path}: {str(e)}"]
+
+    logs_error = leer_log(error_log_path)
+    logs_access = leer_log(access_log_path)
+
+    return render_template('logs.html', logs_error=logs_error, logs_access=logs_access)

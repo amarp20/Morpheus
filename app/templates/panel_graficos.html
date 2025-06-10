@@ -3,15 +3,16 @@
   <!-- Estos son los botones que van a las vistas por plantas -->
   <div class="row justify-content-center mb-4">
     <div class="col-md-4 text-center">
-      <a href="{{ url_for('main.plano_planta1') }}" class="btn btn-primary btn-sm">VISTA P1</a>
+      <a href="{{ url_for('main.plano_planta1') }}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true"><i class='fas fa-building'></i> VISTA P1</a>
     </div>
     <div class="col-md-4 text-center">
-      <a href="{{ url_for('main.plano_planta2') }}" class="btn btn-primary btn-sm">VISTA P2</a>
+      <a href="{{ url_for('main.plano_planta2') }}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true"><i class='fas fa-building'></i> VISTA P2</a>
     </div>
     <div class="col-md-4 text-center">
-      <a href="{{ url_for('main.plano_planta3') }}" class="btn btn-primary btn-sm">VISTA P3</a>
+      <a href="{{ url_for('main.plano_planta3') }}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true"><i class='fas fa-building'></i> VISTA P3</a>
     </div>
   </div>
+
   <!-- Porcentajes por planta sin barras de progreso -->
   <div class="row mb-4">
     {% for planta in plantas %}

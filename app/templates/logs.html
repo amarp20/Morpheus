@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Logs del servidor{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Registros de error Nginx (Últimos 10 registros)</h2>
+    <pre class="bg-dark text-white p-3">
+{{ logs_error | join('') }}
+    </pre>
+
+    <h2>Registros de acceso Nginx (Últimos 10 registros)</h2>
+    <pre class="bg-dark text-white p-3">
+{{ logs_access | join('') }}
+    </pre>
+</div>
+{% endblock %}
