@@ -4,7 +4,7 @@ from flask_pymongo import PyMongo
 from pymongo import MongoClient
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = 'mongodb://localhost:27017/Morpheus'  # Ajusta si es necesario
+app.config["MONGO_URI"] = 'mongodb://e2t:Infanteria1537@192.168.7.42:27017/Morpheus?authSource=admin'  # Ajusta si es necesario
 mongo = PyMongo(app)
 
 with open("listado_camas.json", "r", encoding="utf-8") as file:
@@ -14,7 +14,7 @@ with open("listado_camas.json", "r", encoding="utf-8") as file:
 result = mongo.db.beds.insert_many(beds_data)
 print(f"Insertados {len(result.inserted_ids)} documentos en la colección 'beds'.")
 
-client = MongoClient("mongodb://localhost:27017/Morpheus")
+client = MongoClient("mongodb://e2t:Infanteria1537@192.168.7.42:27017/admin")
 db = client["Morpheus"]
 
 camas = db.beds.find()

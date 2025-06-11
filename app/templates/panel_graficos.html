@@ -49,13 +49,13 @@
           {% set camas = camas_por_planta.get(planta, []) %}
           {% if camas %}
             {% for cama in camas %}
-              <div class="mb-2 p-2 border rounded {% if cama.estado == 'Ocupada' %}bg-danger-subtle{% else %}bg-success-subtle{% endif %}">
+              <div class="mb-2 p-2 border rounded {% if cama.estado == 'OCUPADA' %}bg-danger-subtle{% else %}bg-success-subtle{% endif %}">
                 <strong>Zona:</strong> {{ cama.zona }},
                 <strong>Módulo:</strong> {{ cama.modulo }},
                 <strong>Habitación:</strong> {{ cama.habitacion }},
                 <strong>Cama:</strong> {{ cama.numero }},
                 <strong>Estado:</strong>
-                <span class="fw-bold {% if cama.estado == 'Ocupada' %}text-danger{% else %}text-success{% endif %}">
+                <span class="fw-bold {% if cama.estado == 'OCUPADA' %}text-danger{% else %}text-success{% endif %}">
                   {{ cama.estado }}
                 </span>
                 {% if cama.numero_alumno %}

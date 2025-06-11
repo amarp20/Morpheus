@@ -156,7 +156,12 @@ def preview():
     path = os.path.join(upload_folder, file.filename)
     file.save(path)
 
-    df = pd.read_excel(path, engine="openpyxl", dtype=str)
+    ext = file.filename.rsplit('.', 1)[1].lower()
+    if ext == "csv":
+        df = pd.read_csv(path, dtype=str)
+    else:
+        df = pd.read_excel(path, engine="openpyxl", dtype=str)
+
     for col in ['planta', 'zona', 'modulo', 'habitacion', 'numero']:
         if col in df.columns:
             df[col] = df[col].astype(str)
@@ -175,36 +180,34 @@ def apply_update_redirect():
 def apply_update():
     filename = request.form.get("filename")
     path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-    df = pd.read_excel(path, engine="openpyxl", dtype=str)
+
+    ext = filename.rsplit('.', 1)[1].lower()
+    if ext == "csv":
+        df = pd.read_csv(path, dtype=str)
+    else:
+        df = pd.read_excel(path, engine="openpyxl", dtype=str)
+
     for col in ['planta', 'zona', 'modulo', 'habitacion', 'numero']:
         if col in df.columns:
             df[col] = df[col].astype(str)
-            
+
     updated = 0
     for _, row in df.iterrows():
         bed_id = row.get("bed_id")
         if bed_id:
             bed_id = str(bed_id).strip()
-        new_vals = {}
 
+        new_vals = {}
         campos_actualizables = [
             "estado", "nombre_alumno", "numero_alumno",
             "apellido1", "apellido2", "brigada", "especialidad", "genero"
         ]
-
         for campo in campos_actualizables:
             valor = row.get(campo)
             if pd.isna(valor) or valor is None:
                 new_vals[campo] = ""
             else:
-                if campo == "estado":
-                    estado_val = str(valor).strip().upper()
-                    if estado_val not in ("OCUPADA", "DESOCUPADA"):
-                        flash("El valor del estado de las camas debe ser Ocupada o Desocupada.", "danger")
-                        return redirect(url_for("main.upload_page"))
-                    new_vals[campo] = estado_val
-                else:
-                    new_vals[campo] = str(valor).strip()
+                new_vals[campo] = str(valor).strip()
 
         if bed_id:
             res = mongo.db.beds.update_one({"bed_id": bed_id}, {"$set": new_vals})
@@ -348,11 +351,15 @@ def desocupar_redirect():
     flash("Acceso no permitido", "danger")
     return redirect(url_for('main.login'))
 
-@login_requerido
 @bp.route('/desocupar', methods=['POST'])
+@login_requerido
 def desocupar_cama():
     bed_id = request.form.get('bed_id')
     if bed_id:
+        # Obtener los datos previos de la cama para mostrar el número de alumno
+        cama_anterior = mongo.db.beds.find_one({"bed_id": bed_id}, {"_id": 0, "numero_alumno": 1})
+        numero_alumno = cama_anterior.get("numero_alumno", "Desconocido") if cama_anterior else "Desconocido"
+
         mongo.db.beds.update_one(
             {"bed_id": bed_id},
             {"$set": {
@@ -366,7 +373,7 @@ def desocupar_cama():
                 "brigada": ""
             }}
         )
-        flash(f'Cama {bed_id} desocupada correctamente.', 'success')
+        flash(f'La Cama {bed_id} perteneciente al alumno nº {numero_alumno} ha sido desocupada correctamente.', 'success')
 
     return redirect(url_for('main.consulta',
         planta=request.form.get('planta', ''),
@@ -378,6 +385,7 @@ def desocupar_cama():
         brigada=request.form.get('brigada', ''),
         consultar=1
     ))
+    
 #Este bp redirecciona a la página correspondiente depues de loguearse
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -850,3 +858,7 @@ def logs():
     logs_access = leer_log(access_log_path)
 
     return render_template('logs.html', logs_error=logs_error, logs_access=logs_access)
+
+@bp.route('/creditos')
+def creditos():
+    return render_template('creditos.html')

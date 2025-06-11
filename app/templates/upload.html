@@ -20,8 +20,8 @@
 
   <form action="{{ url_for('main.preview') }}" method="post" enctype="multipart/form-data">
     <div class="form-group">
-      <label for="excel">Selecciona archivo (.xlsx, .xls)</label>
-      <input type="file" name="excel" accept=".xlsx,.xls" class="form-control" required>
+      <label for="excel">Selecciona archivo (.xlsx, .xls, .csv)</label>
+      <input type="file" name="excel" accept=".xlsx,.xls,.csv" class="form-control" required>
     </div>
     
     <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1em;">Vista previa</button>
