@@ -167,6 +167,14 @@ def preview():
             df[col] = df[col].astype(str)
 
     records = df.to_dict(orient="records")
+
+    # Validación de campo 'estado'
+    for i, fila in enumerate(records):
+        estado = fila.get("estado", "").strip().upper()
+        if estado and estado not in ("OCUPADA", "DESOCUPADA"):
+            flash("Revise el documento. El estado de las camas ha de ser Ocupada o Desocupada.", "danger")
+            return redirect(url_for("main.upload_page"))
+        fila["estado"] = estado  # normaliza el valor
     return render_template("preview.html", camas=records, filename=file.filename)
 
 #Con este bp se aplican los cambios de subir excel
@@ -207,7 +215,16 @@ def apply_update():
             if pd.isna(valor) or valor is None:
                 new_vals[campo] = ""
             else:
-                new_vals[campo] = str(valor).strip()
+                valor = str(valor).strip()
+                if campo == "estado":
+                    valor_lower = valor.lower()
+                    if valor_lower in ["ocupada", "desocupada"]:
+                        new_vals[campo] = valor_upper = valor_upper = valor_upper = valor_upper = valor.upper()
+                    else:
+                        flash("Revise el documento. El estado de las camas ha de ser ocupada o desocupada.", "danger")
+                        return redirect(url_for("main.upload_page"))
+                else:
+                    new_vals[campo] = valor
 
         if bed_id:
             res = mongo.db.beds.update_one({"bed_id": bed_id}, {"$set": new_vals})
